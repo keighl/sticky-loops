@@ -1,0 +1,39 @@
+{
+  "name": "selective-surgery",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Kyle Truscott",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack --mode production",
+    "watch": "webpack --mode development --watch",
+    "format": "prettier --write \"**/*.{js,jsx,json,md,ts,tsx}\""
+  },
+  "devDependencies": {
+    "@babel/core": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "@figma/plugin-typings": "^1.47.0",
+    "@types/lodash": "^4.14.176",
+    "@types/react": "^17.0.29",
+    "@types/react-dom": "^17.0.9",
+    "babel-loader": "^8.2.2",
+    "html-webpack-inline-source-plugin": "^0.0.10",
+    "html-webpack-plugin": "^5.5.0",
+    "inline-chunk-html-plugin": "^1.1.1",
+    "prettier": "^2.4.1",
+    "react-dev-utils": "^12.0.1",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.4.4",
+    "webpack": "^5.58.2",
+    "webpack-cli": "^4.9.0"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.4.1",
+    "lodash": "^4.17.21",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "rgb-hex": "^4.0.0",
+    "tone": "^14.7.77",
+    "zustand": "^4.0.0"
+  }
+}

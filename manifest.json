@@ -1,0 +1,8 @@
+{
+	"name": "Figma Synth",
+	"id": "1111690296935263941",
+	"api": "1.0.0",
+	"main": "dist/code.js",
+	"ui": "dist/ui.html",
+	"editorType": ["figma"]
+}

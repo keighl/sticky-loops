@@ -1,20 +1,10 @@
 import readScene from './readScene'
 import { StepSeq } from '../types'
-// setTimeout(() => {
-// 	figma.ui.postMessage({
-// 		command: 'parse'
-// 	})
-// }, 2000)
 
 figma.showUI(__html__, {})
 
-const parseThenPlay = () => {
-	let instructions: StepSeq.SoundTrigger[] = []
-
-	const selection =
-		figma.currentPage.selection.length > 0
-			? figma.currentPage.selection
-			: figma.currentPage.children
+const parseThenPlay = (selection: readonly SceneNode[]) => {
+	let instructions: StepSeq.StickyTrigger[] = []
 
 	// Hoisted index resolver
 	let resolveParsing = () => {}
@@ -28,7 +18,7 @@ const parseThenPlay = () => {
 	})
 
 	const handSceneChunk = async (
-		results: StepSeq.SoundTrigger[],
+		results: StepSeq.StickyTrigger[],
 		done: boolean
 	) => {
 		// Pump the results into our map
@@ -92,7 +82,6 @@ const parseThenPlay = () => {
 				command: 'play_instructions',
 				data: {
 					beatGroups: columns,
-					tempo: 120,
 				},
 			}
 			figma.ui.postMessage(message)
@@ -106,11 +95,15 @@ const parseThenPlay = () => {
 }
 
 figma.on('run', async () => {
-	parseThenPlay()
+	parseThenPlay(figma.currentPage.selection)
 })
 
-figma.ui.onmessage = (message: StepSeq.FigmaPluginMessage) => {
-	// if (message.command === 'parse_then_play') {
-	// 	parseThenPlay()
-	// }
-}
+figma.on('selectionchange', async () => {
+	if (figma.currentPage.selection.length > 0) {
+		parseThenPlay(figma.currentPage.selection)
+	}
+
+	// Just keep whatever data is currrently loaded up if there is no selection...
+})
+
+figma.ui.onmessage = (message: StepSeq.FigmaPluginMessage) => {}

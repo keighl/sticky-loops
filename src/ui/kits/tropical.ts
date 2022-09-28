@@ -1,17 +1,18 @@
 import * as Tone from 'tone'
 
-import { STICKY_COLOR_GRAY,
-STICKY_COLOR_RED,
-STICKY_COLOR_BLUE,
-STICKY_COLOR_ORANGE,
-STICKY_COLOR_PINK,
-STICKY_COLOR_LIGHTGRAY,
-STICKY_COLOR_TEAL,
-STICKY_COLOR_YELLOW,
-STICKY_COLOR_VIOLET,
-STICKY_COLOR_GREEN } from '../../constants'
-import { instrumentTrigger, Kitz } from '../constants'
-
+import {
+	STICKY_COLOR_GRAY,
+	STICKY_COLOR_RED,
+	STICKY_COLOR_BLUE,
+	STICKY_COLOR_ORANGE,
+	STICKY_COLOR_PINK,
+	STICKY_COLOR_LIGHTGRAY,
+	STICKY_COLOR_TEAL,
+	STICKY_COLOR_YELLOW,
+	STICKY_COLOR_VIOLET,
+	STICKY_COLOR_GREEN,
+} from '../../constants'
+import { instrumentTrigger, KitTriggerOptions, Kitz } from '../constants'
 
 class Tropical implements Kitz {
 	// Instrument sources
@@ -77,8 +78,7 @@ class Tropical implements Kitz {
 			.connect(delay)
 			.toDestination()
 	}
-
-	trigger(sounds: string[], time: Tone.Unit.Time) {
+	trigger({ sounds, time, subdivision }: KitTriggerOptions) {
 		const synthData = sounds.reduce<
 			Record<string, { notes: Tone.Unit.Frequency[] }>
 		>((results, sound) => {
@@ -102,13 +102,13 @@ class Tropical implements Kitz {
 
 		const sourceMap: Record<string, (notes: Tone.Unit.Frequency[]) => void> = {
 			membrane: (notes) => {
-				this.membrane.triggerAttackRelease(notes, '8n', time)
+				this.membrane.triggerAttackRelease(notes, subdivision, time)
 			},
 			noise: () => {
-				this.noise.triggerAttackRelease('8n', time)
+				this.noise.triggerAttackRelease(subdivision, time)
 			},
 			piano: (notes) => {
-				this.piano.triggerAttackRelease(notes, '2n', time)
+				this.piano.triggerAttackRelease(notes, subdivision, time)
 			},
 		}
 

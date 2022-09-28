@@ -12,7 +12,7 @@ import {
 	STICKY_COLOR_VIOLET,
 	STICKY_COLOR_GREEN,
 } from '../../constants'
-import { instrumentTrigger, Kitz } from '../constants'
+import { instrumentTrigger, KitTriggerOptions, Kitz } from '../constants'
 
 class Drum implements Kitz {
 	// Instrument sources
@@ -77,7 +77,7 @@ class Drum implements Kitz {
 		}).toDestination()
 	}
 
-	trigger(sounds: string[], time: Tone.Unit.Time) {
+	trigger({ sounds, time, subdivision }: KitTriggerOptions) {
 		const synthData = sounds.reduce<
 			Record<string, { notes: Tone.Unit.Frequency[] }>
 		>((results, sound) => {
@@ -101,7 +101,7 @@ class Drum implements Kitz {
 
 		const sourceMap: Record<string, (notes: Tone.Unit.Frequency[]) => void> = {
 			drums: (notes) => {
-				this.drumSampler.triggerAttackRelease(notes, '8n', time)
+				this.drumSampler.triggerAttackRelease(notes, subdivision, time)
 			},
 		}
 

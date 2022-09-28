@@ -2,17 +2,16 @@ import {
 	FunctionComponent,
 	useCallback,
 	useEffect,
-	useMemo,
 	useRef,
 	useState,
 } from 'react'
 import * as Tone from 'tone'
+
+import { useStore } from '../store'
 import { StepSeq } from '../../types'
 import { Kitz } from '../constants'
 import DrumKit from '../kits/drumkit'
 import TropicalKit from '../kits/tropical'
-
-import { useStore } from '../store'
 
 type Props = {}
 
@@ -27,18 +26,42 @@ const kitMap: Record<string, Kitz> = {
 const App: FunctionComponent<Props> = ({}) => {
 	const toneSequence = useRef<Tone.Sequence | null>(null)
 
+	// Steps
 	const { sequenceData } = useStore((state) => state)
 
+	// Kit
+	const [kit, setKit] = useState<string>('tropicalKit')
+
+	// BPM
 	const [bpm, setBpm] = useState(Tone.Transport.bpm.value)
 	useEffect(() => {
 		Tone.Transport.bpm.rampTo(bpm)
 	}, [bpm])
 
-	const [kit, setKit] = useState<string>('tropicalKit')
-	useEffect(() => {})
+	// Subdivision
+	const [subdivision, setSubdivision] = useState('8n')
 
-	////
+	// Status
+	const [playing, setPlaying] = useState(false)
+	useEffect(() => {
+		Tone.Transport.on('pause', () => {
+			setPlaying(false)
+		})
+		Tone.Transport.on('start', () => {
+			setPlaying(true)
+		})
+		Tone.Transport.on('stop', () => {
+			setPlaying(false)
+		})
 
+		return () => {
+			Tone.Transport.off('pause')
+			Tone.Transport.off('start')
+			Tone.Transport.off('stop')
+		}
+	}, [])
+
+	// Tick
 	const _tick = useCallback(
 		(time: number, group: { group: StepSeq.BeatGroup; idx: number }) => {
 			if (!toneSequence.current) {
@@ -55,41 +78,56 @@ const App: FunctionComponent<Props> = ({}) => {
 			)
 
 			if (!kitMap[kit]) return
-			kitMap[kit].trigger(uniqueColors, time)
+			kitMap[kit].trigger({ sounds: uniqueColors, time, subdivision })
 		},
-		[kit]
+		[kit, subdivision]
 	)
 
 	useEffect(() => {
+		// Update the tick call back so we grab the right kit sounds
 		if (toneSequence.current) {
 			toneSequence.current.callback = _tick
 		}
 	}, [_tick])
 
 	useEffect(() => {
-		Tone.Transport.stop()
+		Tone.Transport.timeSignature = [4, 4]
 
 		if (toneSequence.current) {
 			toneSequence.current.dispose()
+			toneSequence.current = null
 		}
 
 		if (sequenceData.beatGroups.length == 0) {
+			// If we have no data, shut it down
+			Tone.Transport.stop()
+
 			return
 		}
 
-		Tone.Transport.timeSignature = [4 / 4]
-		// Tone.Transport.bpm.value = 118
-		toneSequence.current = new Tone.Sequence(
-			_tick,
-			sequenceData.beatGroups.map((group, idx) => {
-				return {
-					group,
-					idx,
-				}
-			}),
-			'8n'
-		).start(0)
-	}, [sequenceData])
+		const buildNewSequence = () => {
+			// If there is no sequence running, start it up
+			Tone.Transport.stop()
+			toneSequence.current = new Tone.Sequence(
+				_tick,
+				sequenceData.beatGroups.map((group, idx) => {
+					return {
+						group,
+						idx,
+					}
+				}),
+				subdivision
+			).start(0)
+			Tone.Transport.start()
+			return
+		}
+
+		Tone.Transport.stop()
+		buildNewSequence()
+		Tone.Transport.start()
+	}, [sequenceData, subdivision])
+
+	////
 
 	const play_pause = () => {
 		Tone.Transport.toggle()
@@ -110,6 +148,21 @@ const App: FunctionComponent<Props> = ({}) => {
 					<option value="drumKit">Stark drums</option>
 				</select>
 			</div>
+			<div>
+				<select
+					name="subdivision"
+					id="subdivision"
+					value={subdivision}
+					onChange={(e) => {
+						setSubdivision(e.target.value)
+					}}
+				>
+					<option value="8n">1/8 notes</option>
+					<option value="4n">1/4 notes</option>
+					<option value="8t">1/8 note triplets</option>
+					<option value="4t">1/4 note triplets</option>
+				</select>
+			</div>
 			<br />
 			<div>
 				BPM: {bpm}
@@ -126,7 +179,7 @@ const App: FunctionComponent<Props> = ({}) => {
 			</div>
 			<br />
 			<div>
-				<button onClick={play_pause}>Play/Pause</button>
+				<button onClick={play_pause}>{playing ? 'Pause' : 'Play'}</button>
 			</div>
 		</div>
 	)

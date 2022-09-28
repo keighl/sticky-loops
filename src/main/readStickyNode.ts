@@ -1,9 +1,7 @@
 import rgbHex from 'rgb-hex'
 import { StepSeq } from '../types'
 
-const parseSticky = (node: StickyNode): StepSeq.SoundTrigger | null => {
-	console.log(node.fills)
-
+const parseSticky = (node: StickyNode): StepSeq.StickyTrigger | null => {
 	let color: string | null = null
 
 	if (node.fills && node.fills !== figma.mixed) {
@@ -11,11 +9,9 @@ const parseSticky = (node: StickyNode): StepSeq.SoundTrigger | null => {
 			if (!fill) {
 				continue
 			}
-			console.log(fill)
 
 			if (fill.type === 'SOLID') {
 				const { r, g, b } = (fill as SolidPaint).color
-				console.log(r, g, b)
 
 				color = `#${rgbHex(
 					Math.round(r * 255.0),
@@ -27,7 +23,7 @@ const parseSticky = (node: StickyNode): StepSeq.SoundTrigger | null => {
 		}
 	}
 
-	const instruction: StepSeq.SoundTrigger = {
+	const instruction: StepSeq.StickyTrigger = {
 		id: node.id,
 		rect: {
 			x: node.x,

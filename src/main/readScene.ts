@@ -21,14 +21,14 @@ let indexChunkTimer: number
 const readScene = async (
 	nodes: readonly SceneNode[],
 	resultsHandler: (
-		results: StepSeq.SoundTrigger[],
+		results: StepSeq.StickyTrigger[],
 		done: boolean
 	) => Promise<void>
 ) => {
 	const walker = parseWalker(nodes)
 
 	const processChunk = () => {
-		let results: StepSeq.SoundTrigger[] = []
+		let results: StepSeq.StickyTrigger[] = []
 		let count = 0
 		let done = true
 		let res

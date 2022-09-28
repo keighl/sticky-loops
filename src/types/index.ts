@@ -4,7 +4,7 @@ export namespace StepSeq {
 		data: any
 	}
 
-	export interface SoundTrigger {
+	export interface StickyTrigger {
 		id: string
 		color: string
 		rect: {
@@ -19,6 +19,6 @@ export namespace StepSeq {
 		minX: number
 		maxX: number
 		meanX: number
-		triggers: SoundTrigger[]
+		triggers: StickyTrigger[]
 	}
 }

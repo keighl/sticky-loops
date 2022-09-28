@@ -5,7 +5,13 @@ export type instrumentTrigger = {
 	notes: Tone.Unit.Frequency[]
 }
 
+export type KitTriggerOptions = {
+	sounds: string[]
+	time: Tone.Unit.Time
+	subdivision: Tone.Unit.Time
+}
+
 export interface Kitz {
-	trigger(sounds: string[], time: Tone.Unit.Time): void
+	trigger(options: KitTriggerOptions): void
 	sounds: Record<string, instrumentTrigger>
 }

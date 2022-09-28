@@ -1,27 +1,19 @@
 import * as Tone from 'tone'
 
-const STICKY_COLOR_GRAY = '#AFBCCF'
-const STICKY_COLOR_RED = '#FFAFA3'
-const STICKY_COLOR_BLUE = '#80CAFF'
-const STICKY_COLOR_ORANGE = '#FFC470'
-const STICKY_COLOR_PINK = '#FFBDF2'
-const STICKY_COLOR_LIGHTGRAY = '#E6E6E6'
-const STICKY_COLOR_TEAL = '#75D7F0'
-const STICKY_COLOR_YELLOW = '#FFD966'
-const STICKY_COLOR_VIOLET = '#D9B8FF'
-const STICKY_COLOR_GREEN = '#85E0A3'
+import { STICKY_COLOR_GRAY,
+STICKY_COLOR_RED,
+STICKY_COLOR_BLUE,
+STICKY_COLOR_ORANGE,
+STICKY_COLOR_PINK,
+STICKY_COLOR_LIGHTGRAY,
+STICKY_COLOR_TEAL,
+STICKY_COLOR_YELLOW,
+STICKY_COLOR_VIOLET,
+STICKY_COLOR_GREEN } from '../../constants'
+import { instrumentTrigger, Kitz } from '../constants'
 
-type instrumentTrigger = {
-	sourceTarget: string
-	notes: Tone.Unit.Frequency[]
-}
 
-export interface Kitz {
-	trigger(sounds: string[], time: Tone.Unit.Time): void
-	sounds: Record<string, instrumentTrigger>
-}
-
-class Kit implements Kitz {
+class Tropical implements Kitz {
 	// Instrument sources
 	membrane: Tone.PolySynth
 	noise: Tone.NoiseSynth
@@ -71,7 +63,7 @@ class Kit implements Kitz {
 	}
 
 	constructor() {
-		console.log('construct')
+		const delay = new Tone.FeedbackDelay('16n', 0.5).toDestination()
 
 		this.membrane = new Tone.PolySynth(Tone.MembraneSynth).toDestination()
 		this.noise = new Tone.NoiseSynth().toDestination()
@@ -79,10 +71,11 @@ class Kit implements Kitz {
 		this.piano = new Tone.Sampler({
 			urls: {
 				A1: 'A1.mp3',
-				A2: 'A2.mp3',
 			},
 			baseUrl: 'https://tonejs.github.io/audio/casio/',
-		}).toDestination()
+		})
+			.connect(delay)
+			.toDestination()
 	}
 
 	trigger(sounds: string[], time: Tone.Unit.Time) {
@@ -111,11 +104,11 @@ class Kit implements Kitz {
 			membrane: (notes) => {
 				this.membrane.triggerAttackRelease(notes, '8n', time)
 			},
-			noise: (notes) => {
+			noise: () => {
 				this.noise.triggerAttackRelease('8n', time)
 			},
 			piano: (notes) => {
-				this.piano.triggerAttackRelease(notes, '4n', time)
+				this.piano.triggerAttackRelease(notes, '2n', time)
 			},
 		}
 
@@ -126,4 +119,4 @@ class Kit implements Kitz {
 	}
 }
 
-export default Kit
+export default Tropical

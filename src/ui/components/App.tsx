@@ -1,40 +1,70 @@
-import { FunctionComponent, useEffect, useRef } from 'react'
+import {
+	FunctionComponent,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react'
 import * as Tone from 'tone'
 import { StepSeq } from '../../types'
-import Kit from '../kits'
+import { Kitz } from '../constants'
+import DrumKit from '../kits/drumkit'
+import TropicalKit from '../kits/tropical'
 
 import { useStore } from '../store'
 
 type Props = {}
 
-const kit = new Kit()
+const drumKit = new DrumKit()
+const tropicalKit = new TropicalKit()
+
+const kitMap: Record<string, Kitz> = {
+	drumKit,
+	tropicalKit,
+}
 
 const App: FunctionComponent<Props> = ({}) => {
 	const toneSequence = useRef<Tone.Sequence | null>(null)
 
 	const { sequenceData } = useStore((state) => state)
 
-	const _tick = (
-		time: number,
-		group: { group: StepSeq.BeatGroup; idx: number }
-	) => {
-		console.log('tick')
+	const [bpm, setBpm] = useState(Tone.Transport.bpm.value)
+	useEffect(() => {
+		Tone.Transport.bpm.rampTo(bpm)
+	}, [bpm])
 
-		if (!toneSequence.current) {
-			return
-		}
+	const [kit, setKit] = useState<string>('tropicalKit')
+	useEffect(() => {})
 
-		const uniqueColors = Object.keys(
-			group.group.triggers.reduce<Record<string, boolean>>(
-				(results, trigger) => {
-					return { ...results, [trigger.color]: true }
-				},
-				{}
+	////
+
+	const _tick = useCallback(
+		(time: number, group: { group: StepSeq.BeatGroup; idx: number }) => {
+			if (!toneSequence.current) {
+				return
+			}
+
+			const uniqueColors = Object.keys(
+				group.group.triggers.reduce<Record<string, boolean>>(
+					(results, trigger) => {
+						return { ...results, [trigger.color]: true }
+					},
+					{}
+				)
 			)
-		)
 
-		kit.trigger(uniqueColors, time)
-	}
+			if (!kitMap[kit]) return
+			kitMap[kit].trigger(uniqueColors, time)
+		},
+		[kit]
+	)
+
+	useEffect(() => {
+		if (toneSequence.current) {
+			toneSequence.current.callback = _tick
+		}
+	}, [_tick])
 
 	useEffect(() => {
 		Tone.Transport.stop()
@@ -48,6 +78,7 @@ const App: FunctionComponent<Props> = ({}) => {
 		}
 
 		Tone.Transport.timeSignature = [4 / 4]
+		// Tone.Transport.bpm.value = 118
 		toneSequence.current = new Tone.Sequence(
 			_tick,
 			sequenceData.beatGroups.map((group, idx) => {
@@ -60,13 +91,43 @@ const App: FunctionComponent<Props> = ({}) => {
 		).start(0)
 	}, [sequenceData])
 
-	const parse_then_play = () => {
+	const play_pause = () => {
 		Tone.Transport.toggle()
 	}
 
 	return (
 		<div>
-			<button onClick={parse_then_play}>Play</button>
+			<div>
+				<select
+					name="kit"
+					id="kit"
+					value={kit}
+					onChange={(e) => {
+						setKit(e.target.value)
+					}}
+				>
+					<option value="tropicalKit">Tropical</option>
+					<option value="drumKit">Stark drums</option>
+				</select>
+			</div>
+			<br />
+			<div>
+				BPM: {bpm}
+				<br />
+				<input
+					type="range"
+					min={72}
+					max={140}
+					value={bpm}
+					onChange={(e) => {
+						setBpm(e.target.valueAsNumber)
+					}}
+				/>
+			</div>
+			<br />
+			<div>
+				<button onClick={play_pause}>Play/Pause</button>
+			</div>
 		</div>
 	)
 }

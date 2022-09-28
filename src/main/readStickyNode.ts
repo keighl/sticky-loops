@@ -1,7 +1,7 @@
 import rgbHex from 'rgb-hex'
-import { StepSeq } from '../types'
+import { FS } from '../types'
 
-const parseSticky = (node: StickyNode): StepSeq.StickyTrigger | null => {
+const parseSticky = (node: StickyNode): FS.StickyNoteData | null => {
 	let color: string | null = null
 
 	if (node.fills && node.fills !== figma.mixed) {
@@ -23,7 +23,7 @@ const parseSticky = (node: StickyNode): StepSeq.StickyTrigger | null => {
 		}
 	}
 
-	const instruction: StepSeq.StickyTrigger = {
+	const instruction: FS.StickyNoteData = {
 		id: node.id,
 		rect: {
 			x: node.x,

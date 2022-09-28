@@ -1,4 +1,4 @@
-import { StepSeq } from '../types'
+import { FS } from '../types'
 import parseSticky from './readStickyNode'
 
 function* parseWalker(
@@ -20,15 +20,12 @@ let indexChunkTimer: number
 
 const readScene = async (
 	nodes: readonly SceneNode[],
-	resultsHandler: (
-		results: StepSeq.StickyTrigger[],
-		done: boolean
-	) => Promise<void>
+	resultsHandler: (results: FS.StickyNoteData[], done: boolean) => Promise<void>
 ) => {
 	const walker = parseWalker(nodes)
 
 	const processChunk = () => {
-		let results: StepSeq.StickyTrigger[] = []
+		let results: FS.StickyNoteData[] = []
 		let count = 0
 		let done = true
 		let res

@@ -1,20 +1,14 @@
 import create from 'zustand'
-import { StepSeq } from '../types'
+import { FS } from '../types'
 
-export interface Store_SequenceData {
-	beatGroups: StepSeq.BeatGroup[]
+export interface FSUI_Store {
+	stepData: FS.StepData.Column[]
 }
 
-export interface FigmaSynthStore {
-	sequenceData: Store_SequenceData
-}
+export const useStore = create<FSUI_Store>((set) => ({
+	stepData: [],
 
-export const useStore = create<FigmaSynthStore>((set) => ({
-	sequenceData: {
-		beatGroups: [],
-	},
-
-	setSequenceData: (sequenceData: Store_SequenceData) => {
-		set({ sequenceData })
+	setStepData: (stepData: FS.StepData.Column[]) => {
+		set({ stepData })
 	},
 }))

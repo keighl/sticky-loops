@@ -1,10 +1,10 @@
-export namespace StepSeq {
-	export type FigmaPluginMessage = {
+export namespace FS {
+	export type PluginMessage<T> = {
 		command: string
-		data: any
+		data: T
 	}
 
-	export interface StickyTrigger {
+	export interface StickyNoteData {
 		id: string
 		color: string
 		rect: {
@@ -15,10 +15,13 @@ export namespace StepSeq {
 		}
 	}
 
-	export interface BeatGroup {
-		minX: number
-		maxX: number
-		meanX: number
-		triggers: StickyTrigger[]
+	export namespace StepData {
+		export interface Column {
+			sounds: Sound[]
+		}
+
+		export interface Sound {
+			color: string
+		}
 	}
 }

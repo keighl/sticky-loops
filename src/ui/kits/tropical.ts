@@ -12,15 +12,15 @@ import {
 	STICKY_COLOR_VIOLET,
 	STICKY_COLOR_GREEN,
 } from '../../constants'
-import { instrumentTrigger, KitTriggerOptions, Kitz } from '../constants'
+import { FSUI } from '../types'
 
-class Tropical implements Kitz {
+class Tropical implements FSUI.Kit {
 	// Instrument sources
 	membrane: Tone.PolySynth
 	noise: Tone.NoiseSynth
 	piano: Tone.Sampler
 
-	sounds: Record<string, instrumentTrigger> = {
+	sounds: Record<string, FSUI.Kit_SoundTrigger> = {
 		[STICKY_COLOR_GRAY]: {
 			sourceTarget: 'membrane',
 			notes: ['A2'],
@@ -78,11 +78,11 @@ class Tropical implements Kitz {
 			.connect(delay)
 			.toDestination()
 	}
-	trigger({ sounds, time, subdivision }: KitTriggerOptions) {
+	trigger({ sounds, time, subdivision }: FSUI.Kit_TriggerOptions) {
 		const synthData = sounds.reduce<
 			Record<string, { notes: Tone.Unit.Frequency[] }>
 		>((results, sound) => {
-			const instrument = this.sounds[sound]
+			const instrument = this.sounds[sound.color]
 			if (!instrument) {
 				console.error('No instrument in kit for', sound)
 

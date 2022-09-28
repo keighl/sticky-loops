@@ -12,13 +12,13 @@ import {
 	STICKY_COLOR_VIOLET,
 	STICKY_COLOR_GREEN,
 } from '../../constants'
-import { instrumentTrigger, KitTriggerOptions, Kitz } from '../constants'
+import { FSUI } from '../types'
 
-class Drum implements Kitz {
+class Drum implements FSUI.Kit {
 	// Instrument sources
 	drumSampler: Tone.Sampler
 
-	sounds: Record<string, instrumentTrigger> = {
+	sounds: Record<string, FSUI.Kit_SoundTrigger> = {
 		[STICKY_COLOR_GRAY]: {
 			sourceTarget: 'drums',
 			notes: ['C2'],
@@ -77,11 +77,11 @@ class Drum implements Kitz {
 		}).toDestination()
 	}
 
-	trigger({ sounds, time, subdivision }: KitTriggerOptions) {
+	trigger({ sounds, time, subdivision }: FSUI.Kit_TriggerOptions) {
 		const synthData = sounds.reduce<
 			Record<string, { notes: Tone.Unit.Frequency[] }>
 		>((results, sound) => {
-			const instrument = this.sounds[sound]
+			const instrument = this.sounds[sound.color]
 			if (!instrument) {
 				console.error('No instrument in kit for', sound)
 

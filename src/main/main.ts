@@ -1,10 +1,10 @@
 import readScene from './readScene'
-import { StepSeq } from '../types'
+import { FS } from '../types'
 
 figma.showUI(__html__, {})
 
 const parseThenPlay = (selection: readonly SceneNode[]) => {
-	let instructions: StepSeq.StickyTrigger[] = []
+	let stickyNotes: FS.StickyNoteData[] = []
 
 	// Hoisted index resolver
 	let resolveParsing = () => {}
@@ -18,11 +18,11 @@ const parseThenPlay = (selection: readonly SceneNode[]) => {
 	})
 
 	const handSceneChunk = async (
-		results: StepSeq.StickyTrigger[],
+		stickyNotesChunk: FS.StickyNoteData[],
 		done: boolean
 	) => {
 		// Pump the results into our map
-		instructions = [...instructions, ...results]
+		stickyNotes = [...stickyNotes, ...stickyNotesChunk]
 
 		// If this is the last chunk...
 		if (done) {
@@ -31,14 +31,22 @@ const parseThenPlay = (selection: readonly SceneNode[]) => {
 			// fire together on the sequence
 
 			// Organize the stickies into columns
-			let columns: StepSeq.BeatGroup[] = []
+			// based on layout
+			type StickyColumn = {
+				minX: number
+				maxX: number
+				meanX: number
+				stickyNotes: FS.StickyNoteData[]
+			}
+
+			let columns: StickyColumn[] = []
 
 			// Start with the topmost stickies
-			const sortedByY = instructions.sort((a, b) => a.rect.y - b.rect.y)
+			const sortedByY = stickyNotes.sort((a, b) => a.rect.y - b.rect.y)
 
-			sortedByY.forEach((trigger) => {
-				const stickyMinX = trigger.rect.x
-				const stickyMaxX = trigger.rect.x + trigger.rect.width
+			sortedByY.forEach((sticky) => {
+				const stickyMinX = sticky.rect.x
+				const stickyMaxX = sticky.rect.x + sticky.rect.width
 
 				// Find the column, if any, with the highest overlap
 				const columnMatches = columns
@@ -59,15 +67,15 @@ const parseThenPlay = (selection: readonly SceneNode[]) => {
 					matchedColumn.minX = Math.min(matchedColumn.minX, stickyMinX)
 					matchedColumn.maxX = Math.max(matchedColumn.minX, stickyMaxX)
 					matchedColumn.meanX = (matchedColumn.minX + matchedColumn.minX) / 2.0
-					matchedColumn.triggers = [...matchedColumn.triggers, trigger]
+					matchedColumn.stickyNotes = [...matchedColumn.stickyNotes, sticky]
 					columns[columnMatches[0].index] = matchedColumn
 				} else {
 					// Doesn't fit any existing columns, so add a new one
-					const newColumn: StepSeq.BeatGroup = {
+					const newColumn: StickyColumn = {
 						minX: stickyMinX,
 						maxX: stickyMaxX,
 						meanX: (stickyMinX + stickyMaxX) / 2.0,
-						triggers: [trigger],
+						stickyNotes: [sticky],
 					}
 
 					columns = [...columns, newColumn]
@@ -75,22 +83,45 @@ const parseThenPlay = (selection: readonly SceneNode[]) => {
 			})
 
 			// Sort the columns left to right
-			columns = columns.sort((a, b) => a.minX - b.minX)
+			const sortedColumns = columns.sort((a, b) => a.minX - b.minX)
 
-			// 2) trigger the index resolver
-			const message: StepSeq.FigmaPluginMessage = {
+			const dedupedColumns: FS.StepData.Column[] = sortedColumns.map(
+				(column) => {
+					const { stickyNotes } = column
+					const stepDataColumn: FS.StepData.Column = {
+						sounds: Object.keys(
+							stickyNotes.reduce<Record<string, boolean>>(
+								(results, stickyNote) => {
+									return { ...results, [stickyNote.color]: true }
+								},
+								{}
+							)
+						).map((color) => {
+							const sound: FS.StepData.Sound = {
+								color,
+							}
+							return sound
+						}),
+					}
+					return stepDataColumn
+				}
+			)
+
+			// 2) Send the data off to the UI
+			// and trigger the index resolver
+			console.log('FS_', 'readScene COMPLETE')
+			const message: FS.PluginMessage<FS.StepData.Column[]> = {
 				command: 'play_instructions',
-				data: {
-					beatGroups: columns,
-				},
+				data: dedupedColumns,
 			}
 			figma.ui.postMessage(message)
 			resolveParsing()
 		}
 	}
 
+	// Read the selection
 	readScene(selection, handSceneChunk).then(() =>
-		console.log('SS_', 'parse START')
+		console.log('FS_', 'readScene START')
 	)
 }
 
@@ -106,4 +137,4 @@ figma.on('selectionchange', async () => {
 	// Just keep whatever data is currrently loaded up if there is no selection...
 })
 
-figma.ui.onmessage = (message: StepSeq.FigmaPluginMessage) => {}
+figma.ui.onmessage = (message: FS.PluginMessage<null>) => {}

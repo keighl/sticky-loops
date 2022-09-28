@@ -8,8 +8,8 @@ import {
 import * as Tone from 'tone'
 
 import { useStore } from '../store'
-import { StepSeq } from '../../types'
-import { Kitz } from '../constants'
+import { FS } from '../../types'
+import { FSUI } from '../types'
 import DrumKit from '../kits/drumkit'
 import TropicalKit from '../kits/tropical'
 
@@ -18,7 +18,7 @@ type Props = {}
 const drumKit = new DrumKit()
 const tropicalKit = new TropicalKit()
 
-const kitMap: Record<string, Kitz> = {
+const kitMap: Record<string, FSUI.Kit> = {
 	drumKit,
 	tropicalKit,
 }
@@ -27,7 +27,7 @@ const App: FunctionComponent<Props> = ({}) => {
 	const toneSequence = useRef<Tone.Sequence | null>(null)
 
 	// Steps
-	const { sequenceData } = useStore((state) => state)
+	const { stepData } = useStore((state) => state)
 
 	// Kit
 	const [kit, setKit] = useState<string>('tropicalKit')
@@ -63,22 +63,14 @@ const App: FunctionComponent<Props> = ({}) => {
 
 	// Tick
 	const _tick = useCallback(
-		(time: number, group: { group: StepSeq.BeatGroup; idx: number }) => {
+		(time: number, column: FS.StepData.Column) => {
 			if (!toneSequence.current) {
 				return
 			}
 
-			const uniqueColors = Object.keys(
-				group.group.triggers.reduce<Record<string, boolean>>(
-					(results, trigger) => {
-						return { ...results, [trigger.color]: true }
-					},
-					{}
-				)
-			)
-
 			if (!kitMap[kit]) return
-			kitMap[kit].trigger({ sounds: uniqueColors, time, subdivision })
+
+			kitMap[kit].trigger({ sounds: column.sounds, time, subdivision })
 		},
 		[kit, subdivision]
 	)
@@ -98,7 +90,7 @@ const App: FunctionComponent<Props> = ({}) => {
 			toneSequence.current = null
 		}
 
-		if (sequenceData.beatGroups.length == 0) {
+		if (stepData.length == 0) {
 			// If we have no data, shut it down
 			Tone.Transport.stop()
 
@@ -110,12 +102,7 @@ const App: FunctionComponent<Props> = ({}) => {
 			Tone.Transport.stop()
 			toneSequence.current = new Tone.Sequence(
 				_tick,
-				sequenceData.beatGroups.map((group, idx) => {
-					return {
-						group,
-						idx,
-					}
-				}),
+				stepData,
 				subdivision
 			).start(0)
 			Tone.Transport.start()
@@ -125,7 +112,7 @@ const App: FunctionComponent<Props> = ({}) => {
 		Tone.Transport.stop()
 		buildNewSequence()
 		Tone.Transport.start()
-	}, [sequenceData, subdivision])
+	}, [stepData, subdivision])
 
 	////
 

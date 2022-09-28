@@ -1,0 +1,32 @@
+/* @font-face {
+	font-family: National2;
+	src: url('./National2Web-Regular.woff2') format('woff2');
+	font-weight: 400;
+}
+
+@font-face {
+	font-family: National2;
+	src: url('./National2Web-Medium.woff2') format('woff2');
+	font-weight: 500;
+}
+
+@font-face {
+	font-family: National2;
+	src: url('./National2Web-Bold.woff2') format('woff2');
+	font-weight: 700;
+} */
+
+html {
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	padding: 0;
+	margin: 0;
+	font-family: 'Helvetica', Courier, monospace;
+	font-size: 16px;
+	color: #4d5153;
+	background-color: #FFFFFF;
+}
+

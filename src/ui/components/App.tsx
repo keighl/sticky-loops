@@ -12,6 +12,7 @@ import { FS } from '../../types'
 import { FSUI } from '../types'
 import DrumKit from '../kits/drumkit'
 import TropicalKit from '../kits/tropical'
+import Visualizer from './Visualizer'
 
 type Props = {}
 
@@ -40,6 +41,9 @@ const App: FunctionComponent<Props> = ({}) => {
 
 	// Subdivision
 	const [subdivision, setSubdivision] = useState('8n')
+
+	// index
+	const [stepIndex, setStepIndex] = useState(-1)
 
 	// Status
 	const [playing, setPlaying] = useState(false)
@@ -71,6 +75,7 @@ const App: FunctionComponent<Props> = ({}) => {
 			if (!kitMap[kit]) return
 
 			kitMap[kit].trigger({ sounds: column.sounds, time, subdivision })
+			setStepIndex(column.index)
 		},
 		[kit, subdivision]
 	)
@@ -88,6 +93,7 @@ const App: FunctionComponent<Props> = ({}) => {
 		if (toneSequence.current) {
 			toneSequence.current.dispose()
 			toneSequence.current = null
+			Tone.Transport.stop()
 		}
 
 		if (stepData.length == 0) {
@@ -109,9 +115,8 @@ const App: FunctionComponent<Props> = ({}) => {
 			return
 		}
 
-		Tone.Transport.stop()
 		buildNewSequence()
-		Tone.Transport.start()
+		// Tone.Transport.start()
 	}, [stepData, subdivision])
 
 	////
@@ -121,53 +126,68 @@ const App: FunctionComponent<Props> = ({}) => {
 	}
 
 	return (
-		<div>
-			<div>
-				<select
-					name="kit"
-					id="kit"
-					value={kit}
-					onChange={(e) => {
-						setKit(e.target.value)
-					}}
-				>
-					<option value="tropicalKit">Tropical</option>
-					<option value="drumKit">Stark drums</option>
-				</select>
-			</div>
-			<div>
-				<select
-					name="subdivision"
-					id="subdivision"
-					value={subdivision}
-					onChange={(e) => {
-						setSubdivision(e.target.value)
-					}}
-				>
-					<option value="8n">1/8 notes</option>
-					<option value="4n">1/4 notes</option>
-					<option value="8t">1/8 note triplets</option>
-					<option value="4t">1/4 note triplets</option>
-				</select>
-			</div>
-			<br />
-			<div>
-				BPM: {bpm}
+		<div
+			css={{
+				display: 'flex',
+				flexDirection: 'column',
+				height: '100vh',
+			}}
+		>
+			<div
+				css={{
+					flex: 0,
+					padding: '8px',
+				}}
+			>
+				<div>
+					<select
+						name="kit"
+						id="kit"
+						value={kit}
+						onChange={(e) => {
+							setKit(e.target.value)
+						}}
+					>
+						<option value="tropicalKit">Tropical</option>
+						<option value="drumKit">Stark drums</option>
+					</select>
+				</div>
+				<div>
+					<select
+						name="subdivision"
+						id="subdivision"
+						value={subdivision}
+						onChange={(e) => {
+							setSubdivision(e.target.value)
+						}}
+					>
+						<option value="8n">1/8 notes</option>
+						<option value="4n">1/4 notes</option>
+						<option value="8t">1/8 note triplets</option>
+						<option value="4t">1/4 note triplets</option>
+					</select>
+				</div>
 				<br />
-				<input
-					type="range"
-					min={72}
-					max={140}
-					value={bpm}
-					onChange={(e) => {
-						setBpm(e.target.valueAsNumber)
-					}}
-				/>
+				<div>
+					BPM: {bpm}
+					<br />
+					<input
+						type="range"
+						min={72}
+						max={140}
+						value={bpm}
+						onChange={(e) => {
+							setBpm(e.target.valueAsNumber)
+						}}
+					/>
+				</div>
+				<br />
+				<div>
+					<button onClick={play_pause}>{playing ? 'Pause' : 'Play'}</button>
+				</div>
 			</div>
-			<br />
-			<div>
-				<button onClick={play_pause}>{playing ? 'Pause' : 'Play'}</button>
-			</div>
+
+			<Visualizer stepData={stepData} stepIndex={stepIndex} playing={playing} />
 		</div>
 	)
 }

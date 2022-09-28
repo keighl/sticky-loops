@@ -5,6 +5,8 @@ import App from './components/App'
 import { useStore } from './store'
 import { FS } from '../types'
 
+import './style/main.css'
+
 // Instantiate a worker
 const workerClient = new WorkerClient()
 

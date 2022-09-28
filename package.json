@@ -12,6 +12,7 @@
   "devDependencies": {
     "@babel/core": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
+    "@emotion/babel-preset-css-prop": "^11.10.0",
     "@figma/plugin-typings": "^1.47.0",
     "@types/lodash": "^4.14.176",
     "@types/react": "^17.0.29",
@@ -25,10 +26,12 @@
     "ts-loader": "^9.2.6",
     "typescript": "^4.4.4",
     "webpack": "^5.58.2",
-    "webpack-cli": "^4.9.0"
+    "webpack-cli": "^4.9.0",
+    "css-loader": "^6.7.1",
+    "style-loader": "^3.3.1"
   },
   "dependencies": {
-    "@emotion/react": "^11.4.1",
+    "@emotion/react": "^11.10.4",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

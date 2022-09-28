@@ -1,7 +1,10 @@
 import readScene from './readScene'
 import { FS } from '../types'
 
-figma.showUI(__html__, {})
+figma.showUI(__html__, {
+	width: 400,
+	height: 460,
+})
 
 const parseThenPlay = (selection: readonly SceneNode[]) => {
 	let stickyNotes: FS.StickyNoteData[] = []
@@ -86,22 +89,24 @@ const parseThenPlay = (selection: readonly SceneNode[]) => {
 			const sortedColumns = columns.sort((a, b) => a.minX - b.minX)
 
 			const dedupedColumns: FS.StepData.Column[] = sortedColumns.map(
-				(column) => {
+				(column, index) => {
 					const { stickyNotes } = column
+
+					const columnsSounds = stickyNotes.reduce<
+						Record<string, FS.StepData.Sound>
+					>((results, stickyNote) => {
+						return {
+							...results,
+							[stickyNote.color]: {
+								color: stickyNote.color,
+								rgb: stickyNote.rgb,
+							},
+						}
+					}, {})
+
 					const stepDataColumn: FS.StepData.Column = {
-						sounds: Object.keys(
-							stickyNotes.reduce<Record<string, boolean>>(
-								(results, stickyNote) => {
-									return { ...results, [stickyNote.color]: true }
-								},
-								{}
-							)
-						).map((color) => {
-							const sound: FS.StepData.Sound = {
-								color,
-							}
-							return sound
-						}),
+						index,
+						sounds: Object.keys(columnsSounds).map((k) => columnsSounds[k]),
 					}
 					return stepDataColumn
 				}

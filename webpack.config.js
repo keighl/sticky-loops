@@ -22,6 +22,14 @@ module.exports = (env, argv) => ({
 				use: 'ts-loader',
 				exclude: /node_modules/,
 			},
+			{
+				test: /\.(png|jpg|gif|woff2)$/i,
+				type: 'asset/inline',
+			},
+			{
+				test: /\.css$/,
+				use: ['style-loader', 'css-loader'],
+			},
 		],
 	},
 
@@ -31,7 +39,7 @@ module.exports = (env, argv) => ({
 			inject: 'body',
 			template: './src/ui/index.html',
 			filename: 'ui.html',
-			inlineSource: '.(js)$',
+			inlineSource: '.(js|css)$',
 			chunks: ['ui', 'worker'],
 			excludeChunks: ['worker'],
 		}),

@@ -3,7 +3,7 @@ import { FS } from '../types'
 
 const parseSticky = (node: StickyNode): FS.StickyNoteData | null => {
 	let color: string | null = null
-
+	let [r, g, b] = [255, 255, 255]
 	if (node.fills && node.fills !== figma.mixed) {
 		for (const fill of node.fills) {
 			if (!fill) {
@@ -11,19 +11,18 @@ const parseSticky = (node: StickyNode): FS.StickyNoteData | null => {
 			}
 
 			if (fill.type === 'SOLID') {
-				const { r, g, b } = (fill as SolidPaint).color
+				const rgb = (fill as SolidPaint).color
+				r = Math.round(rgb.r * 255.0)
+				g = Math.round(rgb.g * 255.0)
+				b = Math.round(rgb.b * 255.0)
 
-				color = `#${rgbHex(
-					Math.round(r * 255.0),
-					Math.round(g * 255.0),
-					Math.round(b * 255.0)
-				).toUpperCase()}`
+				color = `#${rgbHex(r, g, b).toUpperCase()}`
 				break
 			}
 		}
 	}
 
-	const instruction: FS.StickyNoteData = {
+	const stickyNoteData: FS.StickyNoteData = {
 		id: node.id,
 		rect: {
 			x: node.x,
@@ -32,8 +31,9 @@ const parseSticky = (node: StickyNode): FS.StickyNoteData | null => {
 			height: node.height,
 		},
 		color: color ? color : '___',
+		rgb: { r, g, b },
 	}
-	return instruction
+	return stickyNoteData
 }
 
 export default parseSticky

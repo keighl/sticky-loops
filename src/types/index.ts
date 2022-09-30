@@ -27,6 +27,7 @@ export namespace FS {
 		}
 
 		export interface Sound {
+			silent: boolean
 			color: string
 			rgb: {
 				r: number

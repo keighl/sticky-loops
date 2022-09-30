@@ -26,8 +26,8 @@ const Visualizer: FunctionComponent<Props> = ({
 			)
 
 			const newSoundsFromColumn: FS.StepData.Sound[] = column.sounds.filter(
-				({ color }) => {
-					return !currentSoundsByColor[color]
+				({ color, silent }) => {
+					return !currentSoundsByColor[color] && !silent
 				}
 			)
 
@@ -39,7 +39,7 @@ const Visualizer: FunctionComponent<Props> = ({
 	return (
 		<div
 			css={{
-				padding: '8px',
+				padding: '24px',
 				height: '100%',
 				display: 'grid',
 				gridAutoColumns: '1fr',
@@ -101,12 +101,12 @@ const Column: FunctionComponent<{
 							background: soundsByColor[sound.color]
 								? `${sound.color}`
 								: // : `rgba(${sound.rgb.r}, ${sound.rgb.g}, ${sound.rgb.b}, 0.2)`,
-								  '#fafafa',
+								  '#323232',
 
-							boxShadow:
-								triggered && soundsByColor[sound.color]
-									? `inset 0 0 0 2px rgba(0, 0, 0, 0.2)`
-									: 'none',
+							// boxShadow:
+							// 	triggered && soundsByColor[sound.color]
+							// 		? `inset 0 0 0 2px rgba(0, 0, 0, 0.2)`
+							// 		: 'none',
 						}}
 					>
 						<div
@@ -119,7 +119,7 @@ const Column: FunctionComponent<{
 								top: 0,
 								bottom: 0,
 								width: '100%',
-								background: 'rgba(0,0,0,0.01)',
+								background: 'rgba(255,255,255,0.1)',
 							}}
 						></div>
 					</div>

@@ -31,7 +31,7 @@ const App: FunctionComponent<Props> = ({}) => {
 	const { stepData } = useStore((state) => state)
 
 	// Kit
-	const [kit, setKit] = useState<string>('tropicalKit')
+	const [kit, setKit] = useState<string>('drumKit')
 
 	// BPM
 	const [bpm, setBpm] = useState(Tone.Transport.bpm.value)
@@ -89,6 +89,21 @@ const App: FunctionComponent<Props> = ({}) => {
 
 	useEffect(() => {
 		Tone.Transport.timeSignature = [4, 4]
+		const masterCompressor = new Tone.Compressor({
+			threshold: -18,
+			ratio: 3,
+			attack: 0.5,
+			release: 0.1,
+		})
+		const limiter = new Tone.Limiter(-24)
+		const verb = new Tone.Reverb({
+			preDelay: 0.01,
+			decay: 0.75,
+			wet: 0.4,
+		})
+
+		Tone.Destination.chain(masterCompressor, verb, limiter)
+		Tone.Destination.volume.value = -6
 
 		if (toneSequence.current) {
 			toneSequence.current.dispose()
@@ -136,7 +151,7 @@ const App: FunctionComponent<Props> = ({}) => {
 			<div
 				css={{
 					flex: 0,
-					padding: '8px',
+					padding: '24px',
 				}}
 			>
 				<div>
@@ -162,7 +177,8 @@ const App: FunctionComponent<Props> = ({}) => {
 						}}
 					>
 						<option value="8n">1/8 notes</option>
-						<option value="4n">1/4 notes</option>
+						<option value="16n">1/16 notes</option>
+						<option value="32n">1/32 notes</option>
 						<option value="8t">1/8 note triplets</option>
 						<option value="4t">1/4 note triplets</option>
 					</select>
@@ -182,9 +198,9 @@ const App: FunctionComponent<Props> = ({}) => {
 					/>
 				</div>
 				<br />
-				<div>
+				{/* <div>
 					<button onClick={play_pause}>{playing ? 'Pause' : 'Play'}</button>
-				</div>
+				</div> */}
 			</div>
 
 			<Visualizer stepData={stepData} stepIndex={stepIndex} playing={playing} />

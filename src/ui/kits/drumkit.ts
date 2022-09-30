@@ -14,66 +14,80 @@ import {
 } from '../../constants'
 import { FSUI } from '../types'
 
+const midiMap = {
+	kick: 'A1',
+	snare: 'B1',
+	hihat_closed: 'C1',
+	hihat_open: 'D1',
+	tom_low: 'E1',
+	tom_mid: 'F1',
+	tom_high: 'G1',
+	clap: 'A2',
+	ride: 'A3',
+}
+
 class Drum implements FSUI.Kit {
 	// Instrument sources
 	drumSampler: Tone.Sampler
 
 	sounds: Record<string, FSUI.Kit_SoundTrigger> = {
-		[STICKY_COLOR_GRAY]: {
-			sourceTarget: 'drums',
-			notes: ['C2'],
+		[STICKY_COLOR_LIGHTGRAY]: {
+			sourceTarget: 'none',
+			notes: [],
 		},
+
 		[STICKY_COLOR_RED]: {
 			sourceTarget: 'drums',
-			notes: ['D2'],
+			notes: [midiMap.kick],
 		},
 		[STICKY_COLOR_BLUE]: {
 			sourceTarget: 'drums',
-			notes: ['E2'],
+			notes: [midiMap.snare],
 		},
 		[STICKY_COLOR_ORANGE]: {
 			sourceTarget: 'drums',
-			notes: ['F2'],
+			notes: [midiMap.hihat_open],
 		},
 		[STICKY_COLOR_PINK]: {
 			sourceTarget: 'drums',
-			notes: ['G2'],
+			notes: [midiMap.hihat_closed],
 		},
-		[STICKY_COLOR_LIGHTGRAY]: {
+		[STICKY_COLOR_GRAY]: {
 			sourceTarget: 'drums',
-			notes: ['A2'],
+			notes: [midiMap.tom_low],
 		},
 		[STICKY_COLOR_TEAL]: {
 			sourceTarget: 'drums',
-			notes: ['C2'],
+			notes: [midiMap.tom_mid],
 		},
 		[STICKY_COLOR_YELLOW]: {
 			sourceTarget: 'drums',
-			notes: ['D2'],
+			notes: [midiMap.tom_high],
 		},
 		[STICKY_COLOR_VIOLET]: {
 			sourceTarget: 'drums',
-			notes: ['E2'],
+			notes: [midiMap.clap],
 		},
 		[STICKY_COLOR_GREEN]: {
 			sourceTarget: 'drums',
-			notes: ['F2'],
+			notes: [midiMap.ride],
 		},
 	}
 
 	constructor() {
-		const delay = new Tone.FeedbackDelay('16n', 0.5).toDestination()
-
 		this.drumSampler = new Tone.Sampler({
 			urls: {
-				C2: 'kick.mp3',
-				D2: 'snare.mp3',
-				E2: 'hihat.mp3',
-				F2: 'tom1.mp3',
-				G2: 'tom2.mp3',
-				A2: 'tom3.mp3',
+				[midiMap.kick]: 'kick.mp3',
+				[midiMap.snare]: 'snare.mp3',
+				[midiMap.hihat_closed]: 'hihat-closed.mp3',
+				[midiMap.hihat_open]: 'hihat-open.mp3',
+				[midiMap.tom_low]: 'tom-low.mp3',
+				[midiMap.tom_mid]: 'tom-mid.mp3',
+				[midiMap.tom_high]: 'tom-high.mp3',
+				[midiMap.clap]: 'clap.mp3',
+				[midiMap.ride]: 'ride.mp3',
 			},
-			baseUrl: 'https://tonejs.github.io/audio/drum-samples/Stark/',
+			baseUrl: 'https://gogulilango.com/sounds/drum-kits/hiphop/',
 		}).toDestination()
 	}
 
@@ -100,6 +114,7 @@ class Drum implements FSUI.Kit {
 		}, {})
 
 		const sourceMap: Record<string, (notes: Tone.Unit.Frequency[]) => void> = {
+			none: () => {},
 			drums: (notes) => {
 				this.drumSampler.triggerAttackRelease(notes, subdivision, time)
 			},

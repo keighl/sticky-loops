@@ -1,5 +1,6 @@
 import readScene from './readScene'
 import { FS } from '../types'
+import { STICKY_COLOR_LIGHTGRAY } from '../constants'
 
 figma.showUI(__html__, {
 	width: 400,
@@ -100,6 +101,7 @@ const parseThenPlay = (selection: readonly SceneNode[]) => {
 							[stickyNote.color]: {
 								color: stickyNote.color,
 								rgb: stickyNote.rgb,
+								silent: stickyNote.color === STICKY_COLOR_LIGHTGRAY,
 							},
 						}
 					}, {})

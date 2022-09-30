@@ -5,6 +5,7 @@ import App from './components/App'
 import { useStore } from './store'
 import { FS } from '../types'
 
+import 'normalize.css'
 import './style/main.css'
 
 // Instantiate a worker

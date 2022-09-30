@@ -39,7 +39,8 @@ const Visualizer: FunctionComponent<Props> = ({
 	return (
 		<div
 			css={{
-				padding: '24px',
+				padding: '1rem',
+				paddingTop: '0',
 				height: '100%',
 				display: 'grid',
 				gridAutoColumns: '1fr',
@@ -98,6 +99,7 @@ const Column: FunctionComponent<{
 						css={{
 							display: 'block',
 							position: 'relative',
+							borderRadius: '4px',
 							background: soundsByColor[sound.color]
 								? `${sound.color}`
 								: // : `rgba(${sound.rgb.r}, ${sound.rgb.g}, ${sound.rgb.b}, 0.2)`,

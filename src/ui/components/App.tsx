@@ -1,4 +1,4 @@
-import {
+import React, {
 	FunctionComponent,
 	useCallback,
 	useEffect,
@@ -6,6 +6,7 @@ import {
 	useState,
 } from 'react'
 import * as Tone from 'tone'
+import { AnimatePresence } from 'framer-motion'
 
 import { useStore } from '../store'
 import { FS } from '../../types'
@@ -13,6 +14,9 @@ import { FSUI } from '../types'
 import DrumKit from '../kits/drumkit'
 import TropicalKit from '../kits/tropical'
 import Visualizer from './Visualizer'
+import ControlButton from './ControlButton'
+import SubdivisionControls from './SubdivisionControls'
+import { subdivisionOptionsById } from '../constants'
 
 type Props = {}
 
@@ -24,8 +28,14 @@ const kitMap: Record<string, FSUI.Kit> = {
 	tropicalKit,
 }
 
+const bpmMax = 140
+const bpmMin = 72
+
 const App: FunctionComponent<Props> = ({}) => {
 	const toneSequence = useRef<Tone.Sequence | null>(null)
+
+	// UI control state
+	const [controlState, setControlState] = useState<string | null>(null)
 
 	// Steps
 	const { stepData } = useStore((state) => state)
@@ -140,6 +150,10 @@ const App: FunctionComponent<Props> = ({}) => {
 		Tone.Transport.toggle()
 	}
 
+	const setSubdivisionFocus = () => {
+		setControlState('subdivision')
+	}
+
 	return (
 		<div
 			css={{
@@ -151,9 +165,127 @@ const App: FunctionComponent<Props> = ({}) => {
 			<div
 				css={{
 					flex: 0,
-					padding: '24px',
+					padding: '1rem',
 				}}
 			>
+				<div
+					css={{
+						display: 'flex',
+						height: '3rem',
+						'& > * + *': {
+							marginLeft: '0.5rem',
+						},
+					}}
+				>
+
+						{controlState === 'subdivision' && (
+							<SubdivisionControls
+								value={subdivision}
+								onChange={(s) => {
+									setSubdivision(s)
+									setControlState(null)
+								}}
+							/>
+						)}
+						{!controlState && (
+							<React.Fragment>
+								<div
+									css={{
+										padding: '0rem 0.5rem',
+										border: '1px solid #494949',
+										borderRadius: '0.25rem',
+										display: 'flex',
+										alignItems: 'center',
+										height: '3rem',
+										width: '40%',
+									}}
+								>
+									<div>
+										<div
+											css={{
+												fontSize: '0.875rem',
+												fontWeight: 'bold',
+												letterSpacing: '-0.5px',
+												marginBottom: '0.5rem',
+											}}
+										>
+											{bpm}
+										</div>
+
+										<div>
+											<input
+												css={{
+													WebkitAppearance: 'none',
+													background: 'transparent',
+													cursor: 'pointer',
+													width: '100%',
+
+													'&::-webkit-slider-runnable-track': {
+														background: '#505050',
+														height: '0.25rem',
+														borderRadius: '1rem',
+
+														backgroundImage:
+															'linear-gradient(#CACACA, #CACACA)',
+														backgroundSize: `${
+															((bpm - bpmMin) / bpmMin) * 100
+														}% 100%`,
+														backgroundRepeat: 'no-repeat',
+													},
+
+													'&::-webkit-slider-thumb': {
+														WebkitAppearance: 'none',
+														appearance: 'none',
+														width: '1rem',
+														height: '1rem',
+														transform: 'translateY(-6px)',
+														background: '#FFFFFF',
+														borderRadius: '1rem',
+													},
+												}}
+												type="range"
+												min={72}
+												max={140}
+												value={bpm}
+												onChange={(e) => {
+													setBpm(e.target.valueAsNumber)
+												}}
+											/>
+										</div>
+									</div>
+								</div>
+								<ControlButton onClick={setSubdivisionFocus}>
+									<div
+										css={{
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'center',
+											height: '3rem',
+										}}
+									>
+										{subdivisionOptionsById[subdivision].icon}
+									</div>
+								</ControlButton>
+
+								<div
+									css={{
+										padding: '0rem 0.5rem',
+										border: '1px solid #494949',
+										borderRadius: '0.25rem',
+										display: 'flex',
+										alignItems: 'center',
+										height: '3rem',
+										flex: 1,
+									}}
+								>
+									<div>{kit}</div>
+								</div>
+							</React.Fragment>
+						)}
+
+				</div>
+				{/* <br />
+				<br />
 				<div>
 					<select
 						name="kit"
@@ -184,20 +316,8 @@ const App: FunctionComponent<Props> = ({}) => {
 					</select>
 				</div>
 				<br />
-				<div>
-					BPM: {bpm}
-					<br />
-					<input
-						type="range"
-						min={72}
-						max={140}
-						value={bpm}
-						onChange={(e) => {
-							setBpm(e.target.valueAsNumber)
-						}}
-					/>
-				</div>
-				<br />
+
+				<br /> */}
 				{/* <div>
 					<button onClick={play_pause}>{playing ? 'Pause' : 'Play'}</button>
 				</div> */}

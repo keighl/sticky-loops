@@ -3,8 +3,8 @@ import { FS } from '../types'
 import { STICKY_COLOR_LIGHTGRAY } from '../constants'
 
 figma.showUI(__html__, {
-	width: 400,
-	height: 460,
+	width: 360,
+	height: 360,
 })
 
 const parseThenPlay = (selection: readonly SceneNode[]) => {

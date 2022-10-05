@@ -6,7 +6,8 @@ import React, {
 	useState,
 } from 'react'
 import * as Tone from 'tone'
-import { AnimatePresence } from 'framer-motion'
+import { FocusTrapRegion } from 'ariakit/focus-trap'
+import { AnimatePresence, motion } from 'framer-motion'
 
 import { useStore } from '../store'
 import { FS } from '../../types'
@@ -15,8 +16,11 @@ import DrumKit from '../kits/drumkit'
 import TropicalKit from '../kits/tropical'
 import Visualizer from './Visualizer'
 import ControlButton from './ControlButton'
-import SubdivisionControls from './SubdivisionControls'
-import { subdivisionOptionsById } from '../constants'
+import SubdivisionSelection from './SubdivisionSelection'
+import { kitOptionsById, subdivisionOptionsById } from '../constants'
+import KitSelection from './KitSelection'
+import { typeRamp } from '../style'
+import { VisuallyHidden } from 'ariakit'
 
 type Props = {}
 
@@ -26,6 +30,7 @@ const tropicalKit = new TropicalKit()
 const kitMap: Record<string, FSUI.Kit> = {
 	drumKit,
 	tropicalKit,
+	altDrums: drumKit,
 }
 
 const bpmMax = 140
@@ -136,18 +141,21 @@ const App: FunctionComponent<Props> = ({}) => {
 				stepData,
 				subdivision
 			).start(0)
-			Tone.Transport.start()
+			// Tone.Transport.start()
 			return
 		}
 
 		buildNewSequence()
-		// Tone.Transport.start()
 	}, [stepData, subdivision])
 
 	////
 
 	const play_pause = () => {
 		Tone.Transport.toggle()
+	}
+
+	const setKitFocus = () => {
+		setControlState('kit')
 	}
 
 	const setSubdivisionFocus = () => {
@@ -171,159 +179,182 @@ const App: FunctionComponent<Props> = ({}) => {
 				<div
 					css={{
 						display: 'flex',
+						width: '100%',
 						height: '3rem',
 						'& > * + *': {
 							marginLeft: '0.5rem',
 						},
 					}}
 				>
+					{controlState === 'subdivision' && (
+						<SubdivisionSelection
+							value={subdivision}
+							onChange={(s) => {
+								setSubdivision(s)
+								setControlState(null)
+							}}
+						/>
+					)}
 
-						{controlState === 'subdivision' && (
-							<SubdivisionControls
-								value={subdivision}
-								onChange={(s) => {
-									setSubdivision(s)
-									setControlState(null)
+					{controlState !== 'subdivision' && (
+						<div
+							css={{
+								padding: '0rem 0.5rem',
+								border: '1px solid #494949',
+								borderRadius: '0.25rem',
+								display: 'flex',
+								alignItems: 'center',
+								height: '3rem',
+								width: '40%',
+							}}
+						>
+							<div
+								css={{
+									transform: 'translateY(-2px)',
 								}}
-							/>
-						)}
-						{!controlState && (
-							<React.Fragment>
+							>
 								<div
 									css={{
-										padding: '0rem 0.5rem',
-										border: '1px solid #494949',
-										borderRadius: '0.25rem',
-										display: 'flex',
-										alignItems: 'center',
-										height: '3rem',
-										width: '40%',
+										...typeRamp.bold_12,
+										marginBottom: '0.5rem',
 									}}
 								>
-									<div>
-										<div
-											css={{
-												fontSize: '0.875rem',
-												fontWeight: 'bold',
-												letterSpacing: '-0.5px',
-												marginBottom: '0.5rem',
-											}}
-										>
-											{bpm}
-										</div>
-
-										<div>
-											<input
-												css={{
-													WebkitAppearance: 'none',
-													background: 'transparent',
-													cursor: 'pointer',
-													width: '100%',
-
-													'&::-webkit-slider-runnable-track': {
-														background: '#505050',
-														height: '0.25rem',
-														borderRadius: '1rem',
-
-														backgroundImage:
-															'linear-gradient(#CACACA, #CACACA)',
-														backgroundSize: `${
-															((bpm - bpmMin) / bpmMin) * 100
-														}% 100%`,
-														backgroundRepeat: 'no-repeat',
-													},
-
-													'&::-webkit-slider-thumb': {
-														WebkitAppearance: 'none',
-														appearance: 'none',
-														width: '1rem',
-														height: '1rem',
-														transform: 'translateY(-6px)',
-														background: '#FFFFFF',
-														borderRadius: '1rem',
-													},
-												}}
-												type="range"
-												min={72}
-												max={140}
-												value={bpm}
-												onChange={(e) => {
-													setBpm(e.target.valueAsNumber)
-												}}
-											/>
-										</div>
-									</div>
+									{bpm}
 								</div>
-								<ControlButton onClick={setSubdivisionFocus}>
-									<div
+
+								<div>
+									<input
 										css={{
-											display: 'flex',
-											alignItems: 'center',
-											justifyContent: 'center',
-											height: '3rem',
+											WebkitAppearance: 'none',
+											background: 'transparent',
+											cursor: 'pointer',
+											width: '100%',
+
+											'&::-webkit-slider-runnable-track': {
+												background: '#505050',
+												height: '0.25rem',
+												borderRadius: '1rem',
+
+												backgroundImage: 'linear-gradient(#CACACA, #CACACA)',
+												backgroundSize: `${
+													((bpm - bpmMin) / bpmMin) * 100
+												}% 100%`,
+												backgroundRepeat: 'no-repeat',
+											},
+
+											'&::-webkit-slider-thumb': {
+												WebkitAppearance: 'none',
+												appearance: 'none',
+												width: '0.75rem',
+												height: '0.75rem',
+												transform: 'translateY(-4px)',
+												background: '#FFFFFF',
+												borderRadius: '1rem',
+											},
 										}}
-									>
-										{subdivisionOptionsById[subdivision].icon}
-									</div>
-								</ControlButton>
-
-								<div
-									css={{
-										padding: '0rem 0.5rem',
-										border: '1px solid #494949',
-										borderRadius: '0.25rem',
-										display: 'flex',
-										alignItems: 'center',
-										height: '3rem',
-										flex: 1,
-									}}
-								>
-									<div>{kit}</div>
+										type="range"
+										min={72}
+										max={140}
+										value={bpm}
+										onChange={(e) => {
+											setBpm(e.target.valueAsNumber)
+										}}
+									/>
 								</div>
-							</React.Fragment>
-						)}
-
+							</div>
+						</div>
+					)}
+					{controlState !== 'subdivision' && (
+						<ControlButton onClick={setSubdivisionFocus}>
+							<div
+								css={{
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									height: '3rem',
+								}}
+							>
+								{subdivisionOptionsById[subdivision].icon}
+							</div>
+						</ControlButton>
+					)}
+					{controlState !== 'subdivision' && (
+						<ControlButton onClick={setKitFocus} css={{ flex: 1 }}>
+							<div
+								css={{
+									display: 'flex',
+									alignItems: 'center',
+									...typeRamp.med_14,
+									height: '3rem',
+								}}
+							>
+								<span>{kitOptionsById[kit].name}</span>
+							</div>
+						</ControlButton>
+					)}
 				</div>
-				{/* <br />
-				<br />
-				<div>
-					<select
-						name="kit"
-						id="kit"
-						value={kit}
-						onChange={(e) => {
-							setKit(e.target.value)
-						}}
-					>
-						<option value="tropicalKit">Tropical</option>
-						<option value="drumKit">Stark drums</option>
-					</select>
-				</div>
-				<div>
-					<select
-						name="subdivision"
-						id="subdivision"
-						value={subdivision}
-						onChange={(e) => {
-							setSubdivision(e.target.value)
-						}}
-					>
-						<option value="8n">1/8 notes</option>
-						<option value="16n">1/16 notes</option>
-						<option value="32n">1/32 notes</option>
-						<option value="8t">1/8 note triplets</option>
-						<option value="4t">1/4 note triplets</option>
-					</select>
-				</div>
-				<br />
-
-				<br /> */}
-				{/* <div>
-					<button onClick={play_pause}>{playing ? 'Pause' : 'Play'}</button>
-				</div> */}
 			</div>
 
 			<Visualizer stepData={stepData} stepIndex={stepIndex} playing={playing} />
+
+			<AnimatePresence>
+				{controlState === 'kit' && (
+					<motion.div
+						key="overlay"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						css={{
+							position: 'absolute',
+							zIndex: 100000,
+							top: 0,
+							left: 0,
+							width: '100vw',
+							height: '100vh',
+							background: 'rgba(56, 56, 56, 0.88)',
+							backdropFilter: 'blur(4px)',
+						}}
+					>
+						<div
+							css={{
+								position: 'absolute',
+								top: 0,
+								left: 0,
+								width: '100vw',
+								height: '100vh',
+								display: 'flex',
+								padding: '1rem',
+								alignItems: 'center',
+							}}
+						>
+							<button
+								css={{
+									position: 'absolute',
+									top: 0,
+									left: 0,
+									width: '100%',
+									height: '100%',
+									cursor: 'pointer',
+									background: 'none',
+									border: 0,
+								}}
+								onClick={() => {
+									setControlState(null)
+								}}
+							>
+								<VisuallyHidden>Close</VisuallyHidden>
+							</button>
+							<KitSelection
+								value={kit}
+								onChange={(k) => {
+									setKit(k)
+									// setControlState(null)
+								}}
+							/>
+						</div>
+					</motion.div>
+				)}
+			</AnimatePresence>
 		</div>
 	)
 }

@@ -1,7 +1,7 @@
 export const colors = {
 	// text: '#4d5153',
-	// black: '#000000',
-	// white: '#FFFFFF',
+	black: '#000000',
+	white: '#FFFFFF',
 	// ckGreen: '#008600',
 
 	gray03: '#FAFAFA',
@@ -9,6 +9,8 @@ export const colors = {
 	gray10: '#E6E6E6',
 	gray20: '#CCCCCC',
 	gray30: '#B3B3B3',
+
+	gray80: '#333333',
 }
 
 export const semanticColors = {

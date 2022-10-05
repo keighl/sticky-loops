@@ -64,3 +64,33 @@ export const subdivisionOptionsById = subdivisionOptions.reduce<
 		[option.id]: option,
 	}
 }, {})
+
+type KitOption = {
+	id: string
+	name: string
+}
+
+export const kitOptions: KitOption[] = [
+	{
+		id: 'drumKit',
+		name: 'Drums',
+	},
+	{
+		id: 'tropicalKit',
+		name: 'Hot Tropic',
+	},
+	{
+		id: 'altDrums',
+		name: 'AltDrum',
+	},
+]
+
+export const kitOptionsById = kitOptions.reduce<Record<string, KitOption>>(
+	(result, option) => {
+		return {
+			...result,
+			[option.id]: option,
+		}
+	},
+	{}
+)

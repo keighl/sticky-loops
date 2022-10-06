@@ -1,6 +1,6 @@
-import { ButtonHTMLAttributes, FunctionComponent } from 'react'
+import { ComponentProps, FunctionComponent } from 'react'
 
-interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {}
+interface Props extends ComponentProps<'button'> {}
 
 const ControlButton: FunctionComponent<Props> = ({ children, ...props }) => {
 	return (
@@ -12,9 +12,9 @@ const ControlButton: FunctionComponent<Props> = ({ children, ...props }) => {
 				borderRadius: '0.25rem',
 				cursor: 'pointer',
 				color: '#DCDCDC',
-				height: '3rem',
 
 				'&:focus': {
+					outline: 'none',
 					border: '1px solid #666',
 				},
 			}}

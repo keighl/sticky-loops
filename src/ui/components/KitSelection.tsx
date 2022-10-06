@@ -1,41 +1,54 @@
-import {
-	FunctionComponent,
-	ReactHTMLElement,
-	useEffect,
-	useLayoutEffect,
-	useRef,
-} from 'react'
-import { kitOptions } from '../constants'
-import { colors, typeRamp } from '../style'
+import { FunctionComponent, useEffect, useRef } from 'react'
+import keycode from 'keycode'
 import { Radio, RadioGroup, useRadioState } from 'ariakit/radio'
 import { VisuallyHidden } from 'ariakit'
 import { motion } from 'framer-motion'
 
+import { kitOptions } from '../constants'
+import { colors, typeRamp } from '../style'
+
 type Props = {
 	value: string
-	onChange: (kit: string) => void
+	onChange: (kit: string, close: boolean) => void
 }
 
 const KitSelection: FunctionComponent<Props> = ({ value, onChange }) => {
 	const radio = useRadioState({
 		value,
 		setValue: (value) => {
-			onChange(value as string)
+			onChange(value as string, false)
 		},
 	})
 
+	// Set initial focus
 	const activeRef = useRef<HTMLInputElement | null>(null)
-	useLayoutEffect(() => {
+	useEffect(() => {
 		if (activeRef.current) {
 			activeRef.current.focus()
 		}
 	}, [])
 
+	// keyboard handling
+	useEffect(() => {
+		const keyDownHandler = (event: Event) => {
+			switch (keycode(event)) {
+				case 'enter':
+					onChange(radio.value as string, true)
+					break
+				default:
+					break
+			}
+		}
+
+		document.addEventListener('keydown', keyDownHandler)
+
+		return () => {
+			document.removeEventListener('keydown', keyDownHandler)
+		}
+	}, [])
+
 	return (
-		<motion.div
-			initial={{ y: '2rem' }}
-			animate={{ y: 0 }}
-			exit={{ y: '-4rem' }}
+		<div
 			css={{
 				width: '100%',
 				borderRadius: '0.25rem',
@@ -91,7 +104,7 @@ const KitSelection: FunctionComponent<Props> = ({ value, onChange }) => {
 					)
 				})}
 			</RadioGroup>
-		</motion.div>
+		</div>
 	)
 }
 

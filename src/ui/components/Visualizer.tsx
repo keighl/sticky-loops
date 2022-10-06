@@ -102,19 +102,13 @@ const Column: FunctionComponent<{
 							borderRadius: '4px',
 							background: soundsByColor[sound.color]
 								? `${sound.color}`
-								: // : `rgba(${sound.rgb.r}, ${sound.rgb.g}, ${sound.rgb.b}, 0.2)`,
-								  '#323232',
-
-							// boxShadow:
-							// 	triggered && soundsByColor[sound.color]
-							// 		? `inset 0 0 0 2px rgba(0, 0, 0, 0.2)`
-							// 		: 'none',
+								: '#323232',
 						}}
 					>
 						<div
 							css={{
-								display:
-									triggered && !soundsByColor[sound.color] ? 'block' : 'none',
+								display: !soundsByColor[sound.color] ? 'block' : 'none',
+								opacity: triggered ? 1 : 0,
 								position: 'absolute',
 								left: 0,
 								right: 0,
@@ -122,6 +116,8 @@ const Column: FunctionComponent<{
 								bottom: 0,
 								width: '100%',
 								background: 'rgba(255,255,255,0.1)',
+								transition: 'opacity 50ms linear',
+								borderRadius: '4px',
 							}}
 						></div>
 					</div>

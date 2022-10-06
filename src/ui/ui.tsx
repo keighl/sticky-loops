@@ -1,4 +1,5 @@
 import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 
 import WorkerClient from './workerClient'
 import App from './components/App'
@@ -11,7 +12,8 @@ import './style/main.css'
 // Instantiate a worker
 const workerClient = new WorkerClient()
 
-ReactDOM.render(<App />, document.getElementById('root'))
+const root = createRoot(document.getElementById('root')!)
+root.render(<App />)
 
 const updateStepData = (stepData: FS.StepData.Column[]) => {
 	useStore.setState({ stepData })

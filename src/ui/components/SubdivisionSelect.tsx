@@ -1,32 +1,43 @@
-import React, { FunctionComponent } from 'react'
+import { FunctionComponent, ComponentProps } from 'react'
 import { subdivisionOptions } from '../constants'
 import ControlButton from './ControlButton'
 
-type Props = {
+interface Props extends ComponentProps<'div'> {
 	value: string
-	onChange: (subdivision: string) => void
+	onChangeSubdivision: (subdivision: string) => void
 }
 
-const SubdivisionControls: FunctionComponent<Props> = ({ value, onChange }) => {
+const SubdivisionSelect: FunctionComponent<Props> = ({
+	value,
+	onChangeSubdivision,
+}) => {
 	return (
-		<React.Fragment>
+		<div
+			css={{
+				height: '100%',
+				display: 'flex',
+				'& > * + *': {
+					marginLeft: '0.5rem',
+				},
+			}}
+		>
 			{subdivisionOptions.map(({ id, icon }) => {
 				return (
 					<ControlButton
 						key={id}
 						css={{
+							height: '100%',
 							flex: 1,
 							color: '#777',
 							...(value === id
 								? {
 										borderColor: '#FFFFFF',
 										color: '#FFFFFF',
-										// boxShadow: `inset 0 0 0 3px #383838, inset 0 0 0 3px #666`,
 								  }
 								: {}),
 						}}
 						onClick={() => {
-							onChange(id)
+							onChangeSubdivision(id)
 						}}
 					>
 						<div
@@ -34,7 +45,7 @@ const SubdivisionControls: FunctionComponent<Props> = ({ value, onChange }) => {
 								display: 'flex',
 								alignItems: 'center',
 								justifyContent: 'center',
-								height: '3rem',
+								height: '100%',
 							}}
 						>
 							{icon}
@@ -42,8 +53,8 @@ const SubdivisionControls: FunctionComponent<Props> = ({ value, onChange }) => {
 					</ControlButton>
 				)
 			})}
-		</React.Fragment>
+		</div>
 	)
 }
 
-export default SubdivisionControls
+export default SubdivisionSelect

@@ -1,5 +1,8 @@
 import { ReactNode } from 'react'
 
+export const bpmMax = 140
+export const bpmMin = 72
+
 type SubdivisionOption = {
 	id: string
 	icon: ReactNode

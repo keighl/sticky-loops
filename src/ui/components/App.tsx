@@ -1,4 +1,4 @@
-import React, {
+import {
 	FunctionComponent,
 	useCallback,
 	useEffect,
@@ -7,7 +7,9 @@ import React, {
 } from 'react'
 import * as Tone from 'tone'
 import { FocusTrapRegion } from 'ariakit/focus-trap'
-import { AnimatePresence, motion } from 'framer-motion'
+import { VisuallyHidden } from 'ariakit'
+import { motion, AnimatePresence } from 'framer-motion'
+import keycode from 'keycode'
 
 import { useStore } from '../store'
 import { FS } from '../../types'
@@ -16,11 +18,11 @@ import DrumKit from '../kits/drumkit'
 import TropicalKit from '../kits/tropical'
 import Visualizer from './Visualizer'
 import ControlButton from './ControlButton'
-import SubdivisionSelection from './SubdivisionSelection'
+import SubdivisionSelect from './SubdivisionSelect'
 import { kitOptionsById, subdivisionOptionsById } from '../constants'
 import KitSelection from './KitSelection'
 import { typeRamp } from '../style'
-import { VisuallyHidden } from 'ariakit'
+import TempoSelect from './TempoSelect'
 
 type Props = {}
 
@@ -33,10 +35,11 @@ const kitMap: Record<string, FSUI.Kit> = {
 	altDrums: drumKit,
 }
 
-const bpmMax = 140
-const bpmMin = 72
-
 const App: FunctionComponent<Props> = ({}) => {
+	useEffect(() => {
+		// set initial focus in the plugin upon launch
+		window.focus()
+	}, [])
 	const toneSequence = useRef<Tone.Sequence | null>(null)
 
 	// UI control state
@@ -162,6 +165,28 @@ const App: FunctionComponent<Props> = ({}) => {
 		setControlState('subdivision')
 	}
 
+	// keyboard handling
+	useEffect(() => {
+		const keyDownHandler = (event: Event) => {
+			switch (keycode(event)) {
+				case 'esc':
+					setControlState(null)
+					break
+				case 'space':
+					Tone.Transport.toggle()
+					break
+				default:
+					break
+			}
+		}
+
+		document.addEventListener('keydown', keyDownHandler)
+
+		return () => {
+			document.removeEventListener('keydown', keyDownHandler)
+		}
+	}, [])
+
 	return (
 		<div
 			css={{
@@ -172,126 +197,119 @@ const App: FunctionComponent<Props> = ({}) => {
 		>
 			<div
 				css={{
+					width: '100%',
 					flex: 0,
 					padding: '1rem',
 				}}
 			>
 				<div
 					css={{
-						display: 'flex',
 						width: '100%',
 						height: '3rem',
-						'& > * + *': {
-							marginLeft: '0.5rem',
-						},
+						overflow: 'visible',
 					}}
 				>
-					{controlState === 'subdivision' && (
-						<SubdivisionSelection
-							value={subdivision}
-							onChange={(s) => {
-								setSubdivision(s)
-								setControlState(null)
-							}}
-						/>
-					)}
-
-					{controlState !== 'subdivision' && (
-						<div
-							css={{
-								padding: '0rem 0.5rem',
-								border: '1px solid #494949',
-								borderRadius: '0.25rem',
-								display: 'flex',
-								alignItems: 'center',
-								height: '3rem',
-								width: '40%',
-							}}
-						>
-							<div
+					<AnimatePresence initial={false}>
+						{controlState !== 'subdivision' && (
+							<motion.div
+								key="maincontrols"
+								initial={{ opacity: 0, y: '1rem' }}
+								animate={{
+									y: 0,
+									opacity: 1,
+									transition: {
+										duration: 0.25,
+										delay: 0.35,
+									},
+								}}
+								exit={{
+									y: '-1rem',
+									opacity: 0,
+									transition: {
+										duration: 0.25,
+									},
+								}}
 								css={{
-									transform: 'translateY(-2px)',
+									display: 'flex',
+									width: '100%',
+									height: '100%',
+									'& > * + *': {
+										marginLeft: '0.5rem',
+									},
 								}}
 							>
-								<div
+								<TempoSelect
+									value={bpm}
+									onBPMChange={setBpm}
 									css={{
-										...typeRamp.bold_12,
-										marginBottom: '0.5rem',
+										width: '40%',
 									}}
-								>
-									{bpm}
-								</div>
-
-								<div>
-									<input
+								/>
+								<ControlButton onClick={setSubdivisionFocus}>
+									<div
 										css={{
-											WebkitAppearance: 'none',
-											background: 'transparent',
-											cursor: 'pointer',
-											width: '100%',
-
-											'&::-webkit-slider-runnable-track': {
-												background: '#505050',
-												height: '0.25rem',
-												borderRadius: '1rem',
-
-												backgroundImage: 'linear-gradient(#CACACA, #CACACA)',
-												backgroundSize: `${
-													((bpm - bpmMin) / bpmMin) * 100
-												}% 100%`,
-												backgroundRepeat: 'no-repeat',
-											},
-
-											'&::-webkit-slider-thumb': {
-												WebkitAppearance: 'none',
-												appearance: 'none',
-												width: '0.75rem',
-												height: '0.75rem',
-												transform: 'translateY(-4px)',
-												background: '#FFFFFF',
-												borderRadius: '1rem',
-											},
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'center',
+											height: '3rem',
 										}}
-										type="range"
-										min={72}
-										max={140}
-										value={bpm}
-										onChange={(e) => {
-											setBpm(e.target.valueAsNumber)
+									>
+										{subdivisionOptionsById[subdivision].icon}
+									</div>
+								</ControlButton>
+								<ControlButton onClick={setKitFocus} css={{ flex: 1 }}>
+									<div
+										css={{
+											display: 'flex',
+											alignItems: 'center',
+											...typeRamp.med_14,
+											height: '3rem',
 										}}
-									/>
-								</div>
-							</div>
-						</div>
-					)}
-					{controlState !== 'subdivision' && (
-						<ControlButton onClick={setSubdivisionFocus}>
-							<div
+									>
+										<span>{kitOptionsById[kit].name}</span>
+									</div>
+								</ControlButton>
+							</motion.div>
+						)}
+						{controlState === 'subdivision' && (
+							<motion.div
+								key="subdivionscontrols"
+								initial={{ y: '1rem', opacity: 0 }}
+								animate={{
+									y: 0,
+									opacity: 1,
+									transition: {
+										delay: 0.35,
+										duration: 0.25,
+									},
+								}}
+								exit={{
+									y: '-1rem',
+									opacity: 0,
+									transition: {
+										delay: 0.1,
+										duration: 0.25,
+									},
+								}}
 								css={{
-									display: 'flex',
-									alignItems: 'center',
-									justifyContent: 'center',
-									height: '3rem',
+									width: '100%',
+									height: '100%',
 								}}
 							>
-								{subdivisionOptionsById[subdivision].icon}
-							</div>
-						</ControlButton>
-					)}
-					{controlState !== 'subdivision' && (
-						<ControlButton onClick={setKitFocus} css={{ flex: 1 }}>
-							<div
-								css={{
-									display: 'flex',
-									alignItems: 'center',
-									...typeRamp.med_14,
-									height: '3rem',
-								}}
-							>
-								<span>{kitOptionsById[kit].name}</span>
-							</div>
-						</ControlButton>
-					)}
+								<SubdivisionSelect
+									value={subdivision}
+									onChangeSubdivision={(s) => {
+										setSubdivision(s)
+										setControlState(null)
+									}}
+									css={{
+										height: '100%',
+										width: '100%',
+									}}
+								/>
+							</motion.div>
+						)}
+					</AnimatePresence>
 				</div>
 			</div>
 
@@ -303,7 +321,15 @@ const App: FunctionComponent<Props> = ({}) => {
 						key="overlay"
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
+						exit={{
+							opacity: 0,
+							transition: {
+								delay: 0.1,
+							},
+						}}
+						transition={{
+							duration: 0.35,
+						}}
 						css={{
 							position: 'absolute',
 							zIndex: 100000,
@@ -328,6 +354,7 @@ const App: FunctionComponent<Props> = ({}) => {
 							}}
 						>
 							<button
+								tabIndex={-1}
 								css={{
 									position: 'absolute',
 									top: 0,
@@ -337,6 +364,10 @@ const App: FunctionComponent<Props> = ({}) => {
 									cursor: 'pointer',
 									background: 'none',
 									border: 0,
+									':focus': {
+										appearance: 'none',
+										outline: 'none',
+									},
 								}}
 								onClick={() => {
 									setControlState(null)
@@ -344,13 +375,43 @@ const App: FunctionComponent<Props> = ({}) => {
 							>
 								<VisuallyHidden>Close</VisuallyHidden>
 							</button>
-							<KitSelection
-								value={kit}
-								onChange={(k) => {
-									setKit(k)
-									// setControlState(null)
+							<FocusTrapRegion
+								css={{
+									width: '100%',
 								}}
-							/>
+								enabled={true}
+							>
+								<motion.div
+									key="kitselect"
+									initial={{ y: '2rem', opacity: 0 }}
+									animate={{
+										y: 0,
+										opacity: 1,
+										transition: {
+											duration: '0.4',
+										},
+									}}
+									exit={{
+										opacity: 0,
+										transition: {
+											duration: 0.2,
+										},
+									}}
+									// transition={{
+									// 	duration: 0.3,
+									// }}
+								>
+									<KitSelection
+										value={kit}
+										onChange={(kitID, close) => {
+											setKit(kitID)
+											if (close) {
+												setControlState(null)
+											}
+										}}
+									/>
+								</motion.div>
+							</FocusTrapRegion>
 						</div>
 					</motion.div>
 				)}

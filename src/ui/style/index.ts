@@ -1,16 +1,24 @@
 export const colors = {
-	// text: '#4d5153',
 	black: '#000000',
 	white: '#FFFFFF',
-	// ckGreen: '#008600',
-
 	gray03: '#FAFAFA',
+	gray05: '#F2F2F2',
 	gray07: '#EDEDED',
 	gray10: '#E6E6E6',
+	gray15: '#2B2B2B',
 	gray20: '#CCCCCC',
 	gray30: '#B3B3B3',
-
+	gray40: '#F2F2F2',
+	gray50: '#808080',
+	gray60: '#666666',
+	gray70: '#4D4C4C',
 	gray80: '#333333',
+	gray90: '#1A1A1A',
+
+	grayBrightness: (brightness: number, alpha: number = 1.0) => {
+		const n = brightness * 255
+		return `rgba(${n}, ${n}, ${n}, ${alpha})`
+	},
 }
 
 export const semanticColors = {

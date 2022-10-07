@@ -1,5 +1,6 @@
 import { FunctionComponent } from 'react'
 import { FS } from '../../types'
+import { colors } from '../style'
 
 type Props = {
 	stepData: FS.StepData.Column[]
@@ -93,6 +94,11 @@ const Column: FunctionComponent<{
 			}}
 		>
 			{allSounds.map((sound) => {
+				const bg = soundsByColor[sound.color]
+					? sound.color
+					: triggered
+					? colors.gray50
+					: colors.grayBrightness(0.25)
 				return (
 					<div
 						key={sound.color}
@@ -100,27 +106,21 @@ const Column: FunctionComponent<{
 							display: 'block',
 							position: 'relative',
 							borderRadius: '4px',
-							background: soundsByColor[sound.color]
-								? `${sound.color}`
-								: '#323232',
+							// backgroundColor: soundsByColor[sound.color]
+							// 	? sound.color
+							// 	: triggered
+							// 	? colors.gray50
+							// 	: colors.grayBrightness(0.25),
+
+							boxShadow: triggered
+								? soundsByColor[sound.color]
+									? `0 0 0.5rem ${sound.color}, inset 0 0 0 1px rgba(255, 255, 255, 0.45)`
+									: `none`
+								: 'none',
+
+							background: `${bg}`,
 						}}
-					>
-						<div
-							css={{
-								display: !soundsByColor[sound.color] ? 'block' : 'none',
-								opacity: triggered ? 1 : 0,
-								position: 'absolute',
-								left: 0,
-								right: 0,
-								top: 0,
-								bottom: 0,
-								width: '100%',
-								background: 'rgba(255,255,255,0.1)',
-								transition: 'opacity 50ms linear',
-								borderRadius: '4px',
-							}}
-						></div>
-					</div>
+					></div>
 				)
 			})}
 		</div>

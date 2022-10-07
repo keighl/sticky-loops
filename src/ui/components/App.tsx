@@ -20,7 +20,7 @@ import Visualizer from './Visualizer'
 import ControlButton from './ControlButton'
 import SubdivisionSelect from './SubdivisionSelect'
 import { kitOptionsById, subdivisionOptionsById } from '../constants'
-import KitSelection from './KitSelection'
+import KitSelect from './KitSelect'
 import { typeRamp } from '../style'
 import TempoSelect from './TempoSelect'
 
@@ -43,7 +43,21 @@ const App: FunctionComponent<Props> = ({}) => {
 	const toneSequence = useRef<Tone.Sequence | null>(null)
 
 	// UI control state
-	const [controlState, setControlState] = useState<string | null>(null)
+	const [controlState, setControlState] = useState<
+		'kit' | 'subdivision' | null
+	>(null)
+
+	const clearControlState = () => {
+		setControlState(null)
+	}
+
+	const setKitFocus = () => {
+		setControlState('kit')
+	}
+
+	const setSubdivisionFocus = () => {
+		setControlState('subdivision')
+	}
 
 	// Steps
 	const { stepData } = useStore((state) => state)
@@ -65,6 +79,7 @@ const App: FunctionComponent<Props> = ({}) => {
 
 	// Status
 	const [playing, setPlaying] = useState(false)
+
 	useEffect(() => {
 		Tone.Transport.on('pause', () => {
 			setPlaying(false)
@@ -106,6 +121,9 @@ const App: FunctionComponent<Props> = ({}) => {
 	}, [_tick])
 
 	useEffect(() => {
+		// If the loop is already going, restart the new sequence
+		const shouldRestart = Tone.Transport.state === 'started'
+
 		Tone.Transport.timeSignature = [4, 4]
 		const masterCompressor = new Tone.Compressor({
 			threshold: -18,
@@ -136,19 +154,15 @@ const App: FunctionComponent<Props> = ({}) => {
 			return
 		}
 
-		const buildNewSequence = () => {
-			// If there is no sequence running, start it up
-			Tone.Transport.stop()
-			toneSequence.current = new Tone.Sequence(
-				_tick,
-				stepData,
-				subdivision
-			).start(0)
-			// Tone.Transport.start()
-			return
-		}
+		toneSequence.current = new Tone.Sequence(
+			_tick,
+			stepData,
+			subdivision
+		).start(0)
 
-		buildNewSequence()
+		if (shouldRestart) {
+			Tone.Transport.start()
+		}
 	}, [stepData, subdivision])
 
 	////
@@ -157,23 +171,21 @@ const App: FunctionComponent<Props> = ({}) => {
 		Tone.Transport.toggle()
 	}
 
-	const setKitFocus = () => {
-		setControlState('kit')
-	}
-
-	const setSubdivisionFocus = () => {
-		setControlState('subdivision')
-	}
+	////
 
 	// keyboard handling
 	useEffect(() => {
 		const keyDownHandler = (event: Event) => {
 			switch (keycode(event)) {
 				case 'esc':
-					setControlState(null)
+					clearControlState()
 					break
 				case 'space':
 					Tone.Transport.toggle()
+					event.preventDefault()
+					// dont let the space button bubble up to
+					// buttons as a click. We want space bar to
+					// be exclusively for play/pause
 					break
 				default:
 					break
@@ -238,6 +250,32 @@ const App: FunctionComponent<Props> = ({}) => {
 									},
 								}}
 							>
+								<ControlButton onClick={play_pause}>
+									<div
+										css={{
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'center',
+											height: '3rem',
+										}}
+									>
+										{playing && (
+											<svg width="9" height="10" viewBox="0 0 9 10" fill="none">
+												<path
+													d="M3.17647 0L1.90735e-06 0L1.90735e-06 10H3.17647V0Z"
+													fill="#D9D9D9"
+												/>
+												<path d="M9 0L5.82353 0V10H9V0Z" fill="currentColor" />
+											</svg>
+										)}
+										{!playing && (
+											<svg width="9" height="10" viewBox="0 0 9 10" fill="none">
+												<path d="M9 5L0 0V10L9 5Z" fill="currentColor" />
+											</svg>
+										)}
+									</div>
+								</ControlButton>
+
 								<TempoSelect
 									value={bpm}
 									onBPMChange={setBpm}
@@ -298,9 +336,14 @@ const App: FunctionComponent<Props> = ({}) => {
 							>
 								<SubdivisionSelect
 									value={subdivision}
-									onChangeSubdivision={(s) => {
-										setSubdivision(s)
-										setControlState(null)
+									onChangeSubdivision={(s, close) => {
+										if (s) {
+											setSubdivision(s)
+										}
+
+										if (close) {
+											clearControlState()
+										}
 									}}
 									css={{
 										height: '100%',
@@ -369,9 +412,7 @@ const App: FunctionComponent<Props> = ({}) => {
 										outline: 'none',
 									},
 								}}
-								onClick={() => {
-									setControlState(null)
-								}}
+								onClick={clearControlState}
 							>
 								<VisuallyHidden>Close</VisuallyHidden>
 							</button>
@@ -401,7 +442,7 @@ const App: FunctionComponent<Props> = ({}) => {
 									// 	duration: 0.3,
 									// }}
 								>
-									<KitSelection
+									<KitSelect
 										value={kit}
 										onChange={(kitID, close) => {
 											setKit(kitID)

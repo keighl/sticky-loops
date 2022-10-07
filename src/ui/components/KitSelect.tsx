@@ -2,7 +2,6 @@ import { FunctionComponent, useEffect, useRef } from 'react'
 import keycode from 'keycode'
 import { Radio, RadioGroup, useRadioState } from 'ariakit/radio'
 import { VisuallyHidden } from 'ariakit'
-import { motion } from 'framer-motion'
 
 import { kitOptions } from '../constants'
 import { colors, typeRamp } from '../style'
@@ -53,7 +52,6 @@ const KitSelection: FunctionComponent<Props> = ({ value, onChange }) => {
 				width: '100%',
 				borderRadius: '0.25rem',
 				overflow: 'hidden',
-				background: '#2C2C2C',
 			}}
 		>
 			<RadioGroup
@@ -72,12 +70,14 @@ const KitSelection: FunctionComponent<Props> = ({ value, onChange }) => {
 							role="option"
 							css={{
 								position: 'relative',
-								background: isChecked ? '#212121' : '#2C2C2C',
+								background: isChecked
+									? colors.grayBrightness(0.13)
+									: colors.gray15,
 								...typeRamp.med_14,
 								padding: '0.5rem',
 								display: 'flex',
 								'&:focus-within': {
-									background: '#212121',
+									background: colors.grayBrightness(0.13),
 								},
 								transition: 'background 75ms linear',
 							}}
@@ -95,7 +95,7 @@ const KitSelection: FunctionComponent<Props> = ({ value, onChange }) => {
 							<div
 								css={{
 									flex: 1,
-									color: value === option.id ? colors.white : '#DCDCDC',
+									color: value === option.id ? colors.white : colors.gray50,
 								}}
 							>
 								{option.name}

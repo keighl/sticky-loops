@@ -21,6 +21,10 @@ class Tropical implements FSUI.Kit {
 	piano: Tone.Sampler
 
 	sounds: Record<string, FSUI.Kit_SoundTrigger> = {
+		[STICKY_COLOR_LIGHTGRAY]: {
+			sourceTarget: 'none',
+			notes: [],
+		},
 		[STICKY_COLOR_GRAY]: {
 			sourceTarget: 'membrane',
 			notes: ['A2'],
@@ -41,17 +45,14 @@ class Tropical implements FSUI.Kit {
 			sourceTarget: 'noise',
 			notes: ['E2'],
 		},
-		[STICKY_COLOR_LIGHTGRAY]: {
-			sourceTarget: 'piano',
-			notes: ['F#2', 'A3', 'C#4'],
-		},
+
 		[STICKY_COLOR_TEAL]: {
 			sourceTarget: 'membrane',
 			notes: ['G#2', 'B3'],
 		},
 		[STICKY_COLOR_YELLOW]: {
-			sourceTarget: 'membrane',
-			notes: ['A3'],
+			sourceTarget: 'piano',
+			notes: ['F#2', 'A3', 'C#4'],
 		},
 		[STICKY_COLOR_VIOLET]: {
 			sourceTarget: 'noise',
@@ -101,6 +102,7 @@ class Tropical implements FSUI.Kit {
 		}, {})
 
 		const sourceMap: Record<string, (notes: Tone.Unit.Frequency[]) => void> = {
+			none: () => {},
 			membrane: (notes) => {
 				this.membrane.triggerAttackRelease(notes, subdivision, time)
 			},

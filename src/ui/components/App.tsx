@@ -24,7 +24,7 @@ import ControlButton from './ControlButton'
 import SubdivisionSelect from './SubdivisionSelect'
 import { kitOptionsById, subdivisionOptionsById } from '../constants'
 import KitSelect from './KitSelect'
-import { typeRamp } from '../style'
+import { colors, typeRamp } from '../style'
 import TempoSelect from './TempoSelect'
 
 type Props = {}
@@ -32,7 +32,7 @@ type Props = {}
 const kitMap: Record<string, FSUI.Kit> = {
 	frame808: new Frame808(),
 	spaceBetween: new SpaceBetween(),
-	copyAsPng: new CopyAsPNG(),
+	copyAsPNG: new CopyAsPNG(),
 }
 
 const App: FunctionComponent<Props> = ({}) => {
@@ -63,7 +63,7 @@ const App: FunctionComponent<Props> = ({}) => {
 	const { stepData } = useStore((state) => state)
 
 	// Kit
-	const [kit, setKit] = useState<string>('drumKit')
+	const [kit, setKit] = useState<string>('frame808')
 
 	// BPM
 	const [bpm, setBpm] = useState(Tone.Transport.bpm.value)
@@ -295,16 +295,41 @@ const App: FunctionComponent<Props> = ({}) => {
 										{subdivisionOptionsById[subdivision].icon}
 									</div>
 								</ControlButton>
-								<ControlButton onClick={setKitFocus} css={{ flex: 1 }}>
+								<ControlButton
+									onClick={setKitFocus}
+									css={{ flex: 1, textAlign: 'left' }}
+								>
 									<div
 										css={{
+											width: '100%',
 											display: 'flex',
 											alignItems: 'center',
-											...typeRamp.med_14,
 											height: '3rem',
 										}}
 									>
-										<span>{kitOptionsById[kit].name}</span>
+										<div
+											css={{
+												display: 'block',
+											}}
+										>
+											<div
+												css={{
+													display: 'block',
+													...typeRamp.reg_12,
+													color: colors.gray60,
+												}}
+											>
+												sound
+											</div>
+											<div
+												css={{
+													...typeRamp.med_14,
+													whiteSpace: 'nowrap',
+												}}
+											>
+												{kitOptionsById[kit].name}
+											</div>
+										</div>
 									</div>
 								</ControlButton>
 							</motion.div>

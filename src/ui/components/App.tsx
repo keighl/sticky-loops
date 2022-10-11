@@ -17,6 +17,7 @@ import { FSUI } from '../types'
 import DrumKit from '../kits/drumkit'
 import TropicalKit from '../kits/tropical'
 import Eight08 from '../kits/eight08'
+import JammyCab from '../kits/jammyCab'
 import Visualizer from './Visualizer'
 import ControlButton from './ControlButton'
 import SubdivisionSelect from './SubdivisionSelect'
@@ -31,6 +32,7 @@ const kitMap: Record<string, FSUI.Kit> = {
 	drumKit: new DrumKit(),
 	tropicalKit: new TropicalKit(),
 	eight08: new Eight08(),
+	jammyCab: new JammyCab()
 }
 
 const App: FunctionComponent<Props> = ({}) => {

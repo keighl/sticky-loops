@@ -79,8 +79,8 @@ export const kitOptions: KitOption[] = [
 		name: "Oh, Eight!",
 	},
 	{
-		id: 'tropicalKit',
-		name: 'Hot Tropic',
+		id: 'jammyCab',
+		name: 'A Jammy Cab',
 	},
 	{
 		id: 'drumKit',

@@ -15,15 +15,15 @@ import {
 import { FSUI } from '../types'
 
 const midiMap = {
-	kick: 'A1',
-	snare: 'B1',
-	hihat_pedal: 'C1',
-	hihat_open: 'D1',
-	tom_high: 'E1',
-	clap1: 'F1',
-	clap2: 'G1',
-	shaker: 'A2',
-	tambourine: 'A3',
+	cajonBass: 'A1',
+	cajonSnare: 'B1',
+	castanets: 'C1',
+	timbale: 'D1',
+	stomp: 'E1',
+	maracas: 'F1',
+	congaHigh: 'G1',
+	congaLow: 'A2',
+	claves: 'A3',
 }
 
 class Drum implements FSUI.Kit {
@@ -38,57 +38,56 @@ class Drum implements FSUI.Kit {
 
 		[STICKY_COLOR_RED]: {
 			sourceTarget: 'drums',
-			notes: [midiMap.kick],
+			notes: [midiMap.cajonBass],
 		},
 		[STICKY_COLOR_BLUE]: {
 			sourceTarget: 'drums',
-			notes: [midiMap.snare],
+			notes: [midiMap.cajonSnare],
 		},
 		[STICKY_COLOR_ORANGE]: {
 			sourceTarget: 'drums',
-			notes: [midiMap.hihat_open],
+			notes: [midiMap.castanets],
 		},
 		[STICKY_COLOR_PINK]: {
 			sourceTarget: 'drums',
-			notes: [midiMap.hihat_pedal],
+			notes: [midiMap.timbale],
 		},
 		[STICKY_COLOR_GRAY]: {
 			sourceTarget: 'drums',
-			notes: [midiMap.tambourine],
+			notes: [midiMap.stomp],
 		},
 		[STICKY_COLOR_TEAL]: {
 			sourceTarget: 'drums',
-			notes: [midiMap.tom_high],
+			notes: [midiMap.maracas],
 		},
 		[STICKY_COLOR_YELLOW]: {
 			sourceTarget: 'drums',
-			notes: [midiMap.tom_high],
+			notes: [midiMap.congaHigh],
 		},
 		[STICKY_COLOR_VIOLET]: {
 			sourceTarget: 'drums',
-			notes: [midiMap.clap2],
+			notes: [midiMap.congaLow],
 		},
 		[STICKY_COLOR_GREEN]: {
 			sourceTarget: 'drums',
-			notes: [midiMap.clap1],
+			notes: [midiMap.claves],
 		},
 	}
 
 	constructor() {
 		this.drumSampler = new Tone.Sampler({
 			urls: {
-				[midiMap.kick]: 'kick.wav',
-				[midiMap.snare]: 'snare.wav',
-				[midiMap.hihat_pedal]: 'hihat-pedal.wav',
-				[midiMap.hihat_open]: 'hihat-open.wav',
-				[midiMap.tom_high]: 'tom-high.wav',
-				[midiMap.clap1]: 'clap1.wav',
-                [midiMap.clap2]: 'clap2.wav',
-				[midiMap.shaker]: 'shaker.wav',
-                [midiMap.tambourine]: 'tambourine.wav',
-
+				[midiMap.cajonBass]: 'cajon-bass.wav',
+				[midiMap.cajonSnare]: 'cajon-snare.wav',
+				[midiMap.castanets]: 'castanets.wav',
+				[midiMap.timbale]: 'timbale.wav',
+				[midiMap.stomp]: 'stomp.wav',
+				[midiMap.maracas]: 'maracas.wav',
+				[midiMap.congaHigh]: 'conga-high.wav',
+				[midiMap.congaLow]: 'conga-low.wav',
+				[midiMap.claves]: 'claves.wav',
 			},
-			baseUrl: 'https://sticky-loops.netlify.app/808/',
+			baseUrl: 'https://sticky-loops.netlify.app/copy-as-png/',
 		}).toDestination()
 	}
 

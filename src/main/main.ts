@@ -3,7 +3,7 @@ import { FS } from '../types'
 import { STICKY_COLOR_LIGHTGRAY } from '../constants'
 
 figma.showUI(__html__, {
-	width: 360,
+	width: 420,
 	height: 360,
 })
 

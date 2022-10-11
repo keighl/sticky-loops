@@ -74,7 +74,6 @@ class Drum implements FSUI.Kit {
 		},
 	}
 
-
 	constructor() {
 		this.drumSampler = new Tone.Sampler({
 			urls: {
@@ -88,7 +87,7 @@ class Drum implements FSUI.Kit {
 				[midiMap.bleep]: 'bleep.wav',
 				[midiMap.noise]: 'noise.wav',
 			},
-			baseUrl: 'https://sticky-loops.netlify.app/808/',
+			baseUrl: 'https://sticky-loops.netlify.app/space-between/',
 		}).toDestination()
 	}
 

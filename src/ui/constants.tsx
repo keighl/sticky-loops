@@ -75,16 +75,16 @@ type KitOption = {
 
 export const kitOptions: KitOption[] = [
 	{
-		id: 'drumKit',
-		name: 'Drums',
+		id: 'eight08',
+		name: "Oh, Eight!",
 	},
 	{
 		id: 'tropicalKit',
 		name: 'Hot Tropic',
 	},
 	{
-		id: 'altDrums',
-		name: 'AltDrum',
+		id: 'drumKit',
+		name: 'Drums',
 	},
 ]
 

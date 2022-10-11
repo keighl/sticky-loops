@@ -16,6 +16,7 @@ import { FS } from '../../types'
 import { FSUI } from '../types'
 import DrumKit from '../kits/drumkit'
 import TropicalKit from '../kits/tropical'
+import Eight08 from '../kits/eight08'
 import Visualizer from './Visualizer'
 import ControlButton from './ControlButton'
 import SubdivisionSelect from './SubdivisionSelect'
@@ -26,13 +27,10 @@ import TempoSelect from './TempoSelect'
 
 type Props = {}
 
-const drumKit = new DrumKit()
-const tropicalKit = new TropicalKit()
-
 const kitMap: Record<string, FSUI.Kit> = {
-	drumKit,
-	tropicalKit,
-	altDrums: drumKit,
+	drumKit: new DrumKit(),
+	tropicalKit: new TropicalKit(),
+	eight08: new Eight08(),
 }
 
 const App: FunctionComponent<Props> = ({}) => {

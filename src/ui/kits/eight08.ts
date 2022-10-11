@@ -86,8 +86,9 @@ class Drum implements FSUI.Kit {
                 [midiMap.clap2]: 'clap2.wav',
 				[midiMap.shaker]: 'shaker.wav',
                 [midiMap.tambourine]: 'tambourine.wav',
+
 			},
-			baseUrl: 'https://sticky-loops.netlify.app/808',
+			baseUrl: 'https://sticky-loops.netlify.app/808/',
 		}).toDestination()
 	}
 

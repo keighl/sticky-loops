@@ -2,3 +2,7 @@
 	publish = "sounds/"
 	command = "echo 'void command!'"
 
+[[headers]]
+	for = "/*"
+  	[headers.values]
+		Access-Control-Allow-Origin = "*"

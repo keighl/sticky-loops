@@ -20,7 +20,7 @@ const TempoSelect: FunctionComponent<Props> = ({ value, onBPMChange }) => {
 				borderRadius: '0.25rem',
 				display: 'flex',
 				alignItems: 'center',
-				height: '3rem',
+				height: '100%',
 			}}
 		>
 			<div

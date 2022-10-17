@@ -83,13 +83,14 @@ class Drum implements FSUI.Kit {
 				[midiMap.hihat_open]: 'hihat-open.wav',
 				[midiMap.tom_high]: 'tom-high.wav',
 				[midiMap.clap1]: 'clap1.wav',
-                [midiMap.clap2]: 'clap2.wav',
+				[midiMap.clap2]: 'clap2.wav',
 				[midiMap.shaker]: 'shaker.wav',
-                [midiMap.tambourine]: 'tambourine.wav',
-
+				[midiMap.tambourine]: 'tambourine.wav',
 			},
 			baseUrl: 'https://sticky-loops.netlify.app/frame-808/',
 		}).toDestination()
+
+		this.drumSampler.volume.value = -6
 	}
 
 	trigger({ sounds, time, subdivision }: FSUI.Kit_TriggerOptions) {

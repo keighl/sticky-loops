@@ -14,8 +14,6 @@ import keycode from 'keycode'
 import { useStore } from '../store'
 import { FS } from '../../types'
 import { FSUI } from '../types'
-import DrumKit from '../kits/drumkit'
-import TropicalKit from '../kits/tropical'
 import Frame808 from '../kits/frame808'
 import SpaceBetween from '../kits/spaceBetween'
 import CopyAsPNG from '../kits/copyAsPNG'
@@ -72,7 +70,7 @@ const App: FunctionComponent<Props> = ({}) => {
 	}, [bpm])
 
 	// Subdivision
-	const [subdivision, setSubdivision] = useState('8n')
+	const [subdivision, setSubdivision] = useState('8t')
 
 	// index
 	const [stepIndex, setStepIndex] = useState(-1)
@@ -125,21 +123,6 @@ const App: FunctionComponent<Props> = ({}) => {
 		const shouldRestart = Tone.Transport.state === 'started'
 
 		Tone.Transport.timeSignature = [4, 4]
-		const masterCompressor = new Tone.Compressor({
-			threshold: -18,
-			ratio: 3,
-			attack: 0.5,
-			release: 0.1,
-		})
-		const limiter = new Tone.Limiter(-24)
-		const verb = new Tone.Reverb({
-			preDelay: 0.01,
-			decay: 0.75,
-			wet: 0.4,
-		})
-
-		Tone.Destination.chain(masterCompressor, verb, limiter)
-		Tone.Destination.volume.value = -6
 
 		if (toneSequence.current) {
 			toneSequence.current.dispose()
@@ -276,13 +259,16 @@ const App: FunctionComponent<Props> = ({}) => {
 									</div>
 								</ControlButton>
 
-								<TempoSelect
-									value={bpm}
-									onBPMChange={setBpm}
+								<div
 									css={{
-										width: '40%',
+										width: '28%',
+										// flex: '0 0',
+										height: '3rem',
 									}}
-								/>
+								>
+									<TempoSelect value={bpm} onBPMChange={setBpm} />
+								</div>
+
 								<ControlButton onClick={setSubdivisionFocus}>
 									<div
 										css={{
@@ -315,7 +301,7 @@ const App: FunctionComponent<Props> = ({}) => {
 											<div
 												css={{
 													display: 'block',
-													...typeRamp.reg_12,
+													...typeRamp.reg_10,
 													color: colors.gray60,
 												}}
 											>

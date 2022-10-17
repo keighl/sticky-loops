@@ -89,6 +89,8 @@ class Drum implements FSUI.Kit {
 			},
 			baseUrl: 'https://sticky-loops.netlify.app/space-between/',
 		}).toDestination()
+
+		this.drumSampler.volume.value = -12
 	}
 
 	trigger({ sounds, time, subdivision }: FSUI.Kit_TriggerOptions) {

@@ -27,23 +27,29 @@ export const semanticColors = {
 
 export const fonts = {
 	reg: {
-		fontFamily: 'Helvetica',
+		fontFamily: 'Silkscreen',
 		fontWeight: 400,
 		textStyle: 'none',
 	},
 	med: {
-		fontFamily: 'Helvetica',
-		fontWeight: 500,
+		fontFamily: 'Silkscreen',
+		fontWeight: 400,
 		textStyle: 'none',
 	},
 	bold: {
-		fontFamily: 'Helvetica',
-		fontWeight: 700,
+		fontFamily: 'Silkscreen',
+		fontWeight: 400,
 		textStyle: 'none',
 	},
 }
 
 export const typeRamp = {
+	reg_10: {
+		...fonts.reg,
+		fontSize: `${10 / 16}rem`,
+		lineHeight: `${12 / 16}rem`,
+		letterSpacing: 0,
+	},
 	reg_12: {
 		...fonts.reg,
 		fontSize: `${12 / 16}rem`,

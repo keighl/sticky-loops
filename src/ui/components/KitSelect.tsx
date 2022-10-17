@@ -15,7 +15,7 @@ const KitSelection: FunctionComponent<Props> = ({ value, onChange }) => {
 	const radio = useRadioState({
 		value,
 		setValue: (value) => {
-			onChange(value as string, false)
+			onChange(value as string, true)
 		},
 	})
 

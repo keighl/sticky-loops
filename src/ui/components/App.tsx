@@ -24,6 +24,7 @@ import { kitOptionsById, subdivisionOptionsById } from '../constants'
 import KitSelect from './KitSelect'
 import { colors, typeRamp } from '../style'
 import TempoSelect from './TempoSelect'
+import SelectionImage from './SelectionImage'
 
 type Props = {}
 
@@ -181,6 +182,43 @@ const App: FunctionComponent<Props> = ({}) => {
 			document.removeEventListener('keydown', keyDownHandler)
 		}
 	}, [])
+
+	if (stepData.length === 0) {
+		return (
+			<motion.div
+				animate={{
+					opacity: 1,
+
+				}}
+				transition={{
+					delay: 0.2
+				}}
+				initial={{
+					opacity: 0
+				}}
+				css={{
+					display: 'flex',
+					flexDirection: 'column',
+					height: '100vh',
+					width: '100%',
+					alignItems: 'center',
+					justifyContent: 'center',
+				}}
+			>
+				<SelectionImage />
+				<div
+					css={{
+						...typeRamp.reg_16,
+						textAlign: 'center',
+						width: '200px',
+						paddingTop: '2rem',
+					}}
+				>
+					Select some sticky notes to begin.
+				</div>
+			</motion.div>
+		)
+	}
 
 	return (
 		<div

@@ -6,11 +6,11 @@ Good question! The tech industry has grappled with this quandry since before the
 
 Useful for...
 
-* Priotizing ideas by downbeat
-* Setting the tempo of your meeting
-* Daily scrum concerts
-* Metronome-based design and ideation
-* Effective 1:1s
+- Priotizing ideas by downbeat
+- Setting the tempo of your meeting
+- Daily scrum concerts
+- Metronome-based design and ideation
+- Effective 1:1s
 
 Instructions
 
@@ -28,8 +28,3 @@ Are you a designer or developer passionate about tooling and designer experience
 [https://www.freeassociation.is/careers](https://www.freeassociation.is/careers)
 
 ---
-
-
-
-
-

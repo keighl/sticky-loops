@@ -17,6 +17,7 @@ import { FSUI } from '../types'
 import Frame808 from '../kits/frame808'
 import SpaceBetween from '../kits/spaceBetween'
 import CopyAsPNG from '../kits/copyAsPNG'
+import DocumentColors from '../kits/documentColors'
 import Visualizer from './Visualizer'
 import ControlButton from './ControlButton'
 import SubdivisionSelect from './SubdivisionSelect'
@@ -32,6 +33,7 @@ const kitMap: Record<string, FSUI.Kit> = {
 	frame808: new Frame808(),
 	spaceBetween: new SpaceBetween(),
 	copyAsPNG: new CopyAsPNG(),
+	documentColors: new DocumentColors(),
 }
 
 const App: FunctionComponent<Props> = ({}) => {
@@ -188,13 +190,12 @@ const App: FunctionComponent<Props> = ({}) => {
 			<motion.div
 				animate={{
 					opacity: 1,
-
 				}}
 				transition={{
-					delay: 0.2
+					delay: 0.2,
 				}}
 				initial={{
-					opacity: 0
+					opacity: 0,
 				}}
 				css={{
 					display: 'flex',

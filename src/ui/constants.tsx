@@ -88,6 +88,10 @@ export const kitOptions: KitOption[] = [
 		id: 'copyAsPNG',
 		name: 'Conga as PNG',
 	},
+	{
+		id: 'documentColors',
+		name: 'Document Colors',
+	},
 ]
 
 export const kitOptionsById = kitOptions.reduce<Record<string, KitOption>>(

@@ -55,19 +55,19 @@ class DocumentColors implements FSUI.Kit {
 		},
 		[STICKY_COLOR_TEAL]: {
 			sourceTarget: 'piano',
-			notes: ['C3', 'E4', 'G4', 'A5'],
+			notes: ['C#4', 'F6', 'A#6'],
 		},
 		[STICKY_COLOR_YELLOW]: {
 			sourceTarget: 'piano',
-			notes: ['C3', 'E4', 'G4', 'A5'],
+			notes: ['A#4', 'F4', 'G#5', 'C#5'],
 		},
 		[STICKY_COLOR_VIOLET]: {
 			sourceTarget: 'piano',
-			notes: ['C3', 'E4', 'G4', 'A5'],
+			notes: ['C#5', 'F5'],
 		},
 		[STICKY_COLOR_GREEN]: {
-			sourceTarget: 'piano',
-			notes: ['C3', 'E4', 'G4', 'A5'],
+			sourceTarget: 'drums',
+			notes: [midiMap.hihatOpen],
 		},
 	}
 
@@ -85,11 +85,26 @@ class DocumentColors implements FSUI.Kit {
 
 		this.pianoSampler = new Tone.Sampler({
 			urls: {
-				A1: 'A1.mp3',
-				A2: 'A2.mp3',
+				A3: 'A3.mp3',
+				A4: 'A4.mp3',
+				A5: 'A5.mp3',
+
+				C2: 'C2.mp3',
+				C3: 'C3.mp3',
+				C4: 'C4.mp3',
+				C5: 'C5.mp3',
+
+				'F#3': 'Fs3.mp3',
+				'F#4': 'Fs4.mp3',
+				'F#5': 'Fs5.mp3',
 			},
-			baseUrl: 'https://tonejs.github.io/audio/casio/',
-		}).toDestination()
+			baseUrl: 'https://tonejs.github.io/audio/salamander/',
+		})
+
+		const panner = new Tone.Panner(0.75).toDestination()
+		this.pianoSampler.connect(panner)
+
+		this.pianoSampler.volume.value = -8
 	}
 
 	trigger({ sounds, time, subdivision }: FSUI.Kit_TriggerOptions) {
@@ -116,6 +131,9 @@ class DocumentColors implements FSUI.Kit {
 
 		const sourceMap: Record<string, (notes: Tone.Unit.Frequency[]) => void> = {
 			none: () => {},
+			piano: (notes) => {
+				this.pianoSampler.triggerAttackRelease(notes, subdivision, time)
+			},
 			drums: (notes) => {
 				this.drumSampler.triggerAttackRelease(notes, subdivision, time)
 			},

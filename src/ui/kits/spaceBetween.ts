@@ -26,7 +26,7 @@ const midiMap = {
 	noise: 'A3',
 }
 
-class Drum implements FSUI.Kit {
+class SpaceBetween implements FSUI.Kit {
 	// Instrument sources
 	drumSampler: Tone.Sampler
 
@@ -129,4 +129,4 @@ class Drum implements FSUI.Kit {
 	}
 }
 
-export default Drum
+export default SpaceBetween

@@ -1,10 +1,5 @@
 const SelectionImage = () => (
-	<svg
-		width="223"
-		height="128"
-		viewBox="0 0 223 128"
-		fill="none"
-	>
+	<svg width="223" height="128" viewBox="0 0 223 128" fill="none">
 		<path d="M14 14H52V43.5L43.5 52H14V14Z" fill="#FFAFA3" />
 		<path
 			d="M43.5 43.5V52L52 43.5H43.5Z"

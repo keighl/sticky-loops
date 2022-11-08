@@ -47,7 +47,7 @@ const Visualizer: FunctionComponent<Props> = ({
 				display: 'grid',
 				gridAutoColumns: '1fr',
 				gridAutoFlow: 'column',
-				columnGap: (stepData.length > 50) ? 0 : 4,
+				columnGap: stepData.length > 50 ? 0 : 4,
 			}}
 		>
 			{stepData.map((column, idx) => {
@@ -85,8 +85,8 @@ const Column: FunctionComponent<{
 	column: FS.StepData.Column
 	stepIndex: number
 	allSounds: FS.StepData.Sound[]
-	playing: boolean,
-	packed: boolean,
+	playing: boolean
+	packed: boolean
 }> = ({ column, stepIndex, allSounds, playing, packed }) => {
 	const soundsByColor = column.sounds.reduce<Record<string, boolean>>(
 		(x, sound) => {
@@ -121,7 +121,7 @@ const Column: FunctionComponent<{
 						css={{
 							display: 'block',
 							position: 'relative',
-							borderRadius: (packed) ? 0 : 4,
+							borderRadius: packed ? 0 : 4,
 							backgroundBlendMode: 'multiply, normal',
 							boxShadow: triggered
 								? soundsByColor[sound.color]

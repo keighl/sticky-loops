@@ -26,7 +26,7 @@ const midiMap = {
 	tambourine: 'A3',
 }
 
-class Drum implements FSUI.Kit {
+class Frame808 implements FSUI.Kit {
 	// Instrument sources
 	drumSampler: Tone.Sampler
 
@@ -129,4 +129,4 @@ class Drum implements FSUI.Kit {
 	}
 }
 
-export default Drum
+export default Frame808

@@ -1,16 +1,14 @@
 # Sticky Loops
 
-> What does a brainstorm sound like?
+> What does a brainstorm really sound like?
 
-Good question! The tech industry has grappled with this quandry since before the dot-com bust. But grapple no longer, my friend. Sticky Loops takes any sticky notes in a Figjam document and tranforms them into an awesome drum machine.
+The answer is here! Sticky Loops takes any gaggle of sticky notes in a Figjam document and tranforms them into an awesome sequenced drum machine. Useful for...
 
-Useful for...
-
-- Priotizing ideas by downbeat
-- Setting the tempo of your meeting
 - Daily scrum concerts
-- Metronome-based design and ideation
-- Effective 1:1s
+- Setting meeting tempo
+- Priotizing ideas by downbeat
+- Metronome-based design and concepting
+- Flow disruption
 
 Instructions
 
@@ -21,10 +19,10 @@ Instructions
 
 ---
 
-Made @ [Free Association](https://www.freeassociation.is)
+Made @ [Free Association](https://www.freeassociation.com)
 
-Are you a designer or developer passionate about tooling and designer experience? Join our team! We help teams at the world's top enterprises and startups level up with customized design systems, applications, automation and more.
+Are you passionate about building creative tools and improving the designer experience? Join us! We help teams at the world's top enterprises and startups level-up with customized design systems, applications, automation and more.
 
-[https://www.freeassociation.is/careers](https://www.freeassociation.is/careers)
+[https://www.freeassociation.is/careers](https://www.freeassociation.com/careers)
 
 ---

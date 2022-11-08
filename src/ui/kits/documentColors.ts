@@ -26,6 +26,9 @@ class DocumentColors implements FSUI.Kit {
 	// Instrument sources
 	drumSampler: Tone.Sampler
 	pianoSampler: Tone.Sampler
+	soundsLoaded: boolean
+	drumsLoaded: boolean
+	pianoLoaded: boolean
 
 	sounds: Record<string, FSUI.Kit_SoundTrigger> = {
 		[STICKY_COLOR_LIGHTGRAY]: {
@@ -72,6 +75,10 @@ class DocumentColors implements FSUI.Kit {
 	}
 
 	constructor() {
+		this.soundsLoaded = false
+		this.drumsLoaded = false
+		this.pianoLoaded = false
+
 		this.drumSampler = new Tone.Sampler({
 			urls: {
 				[midiMap.snare]: 'snare.wav',
@@ -81,6 +88,10 @@ class DocumentColors implements FSUI.Kit {
 				[midiMap.hihatFoot]: 'hihat-foot.wav',
 			},
 			baseUrl: 'https://sticky-loops.netlify.app/document-colors/',
+			onload: () => {
+				this.drumsLoaded = true
+				this.checkLoad()
+			},
 		}).toDestination()
 
 		this.pianoSampler = new Tone.Sampler({
@@ -99,20 +110,36 @@ class DocumentColors implements FSUI.Kit {
 				'F#5': 'Fs5.mp3',
 			},
 			baseUrl: 'https://tonejs.github.io/audio/salamander/',
+			onload: () => {
+				this.pianoLoaded = true
+				this.checkLoad()
+			},
+			onerror: (error) => {
+				console.error(error)
+			},
 		})
 
-		const panner = new Tone.Panner(0.75).toDestination()
+		const panner = new Tone.Panner(0.65).toDestination()
 		this.pianoSampler.connect(panner)
 
-		this.pianoSampler.volume.value = -8
+		this.pianoSampler.volume.value = -7
+	}
+
+	checkLoad() {
+		this.soundsLoaded = this.pianoLoaded && this.drumsLoaded
 	}
 
 	trigger({ sounds, time, subdivision }: FSUI.Kit_TriggerOptions) {
+		if (!this.soundsLoaded) {
+			return
+		}
+
 		const synthData = sounds.reduce<
 			Record<string, { notes: Tone.Unit.Frequency[] }>
 		>((results, sound) => {
 			const instrument = this.sounds[sound.color]
 			if (!instrument) {
+				// TODO, find closest color?
 				console.error('No instrument in kit for', sound)
 
 				return results

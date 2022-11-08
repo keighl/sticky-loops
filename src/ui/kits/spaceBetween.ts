@@ -29,6 +29,7 @@ const midiMap = {
 class SpaceBetween implements FSUI.Kit {
 	// Instrument sources
 	drumSampler: Tone.Sampler
+	soundsLoaded: boolean
 
 	sounds: Record<string, FSUI.Kit_SoundTrigger> = {
 		[STICKY_COLOR_LIGHTGRAY]: {
@@ -75,6 +76,7 @@ class SpaceBetween implements FSUI.Kit {
 	}
 
 	constructor() {
+		this.soundsLoaded = false
 		this.drumSampler = new Tone.Sampler({
 			urls: {
 				[midiMap.kick]: 'kick.wav',
@@ -88,12 +90,22 @@ class SpaceBetween implements FSUI.Kit {
 				[midiMap.noise]: 'noise.wav',
 			},
 			baseUrl: 'https://sticky-loops.netlify.app/space-between/',
+			onload: () => {
+				this.soundsLoaded = true
+			},
+			onerror: (error) => {
+				console.error(error)
+			},
 		}).toDestination()
 
 		this.drumSampler.volume.value = -12
 	}
 
 	trigger({ sounds, time, subdivision }: FSUI.Kit_TriggerOptions) {
+		if (!this.soundsLoaded) {
+			return
+		}
+
 		const synthData = sounds.reduce<
 			Record<string, { notes: Tone.Unit.Frequency[] }>
 		>((results, sound) => {

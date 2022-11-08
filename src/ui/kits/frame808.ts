@@ -29,6 +29,7 @@ const midiMap = {
 class Frame808 implements FSUI.Kit {
 	// Instrument sources
 	drumSampler: Tone.Sampler
+	soundsLoaded: boolean
 
 	sounds: Record<string, FSUI.Kit_SoundTrigger> = {
 		[STICKY_COLOR_LIGHTGRAY]: {
@@ -75,6 +76,7 @@ class Frame808 implements FSUI.Kit {
 	}
 
 	constructor() {
+		this.soundsLoaded = false
 		this.drumSampler = new Tone.Sampler({
 			urls: {
 				[midiMap.kick]: 'kick.wav',
@@ -88,18 +90,28 @@ class Frame808 implements FSUI.Kit {
 				[midiMap.tambourine]: 'tambourine.wav',
 			},
 			baseUrl: 'https://sticky-loops.netlify.app/frame-808/',
+			onload: () => {
+				this.soundsLoaded = true
+			},
+			onerror: (error) => {
+				console.log(error)
+			},
 		}).toDestination()
 
 		this.drumSampler.volume.value = -6
 	}
 
 	trigger({ sounds, time, subdivision }: FSUI.Kit_TriggerOptions) {
+		if (!this.soundsLoaded) {
+			return
+		}
+
 		const synthData = sounds.reduce<
 			Record<string, { notes: Tone.Unit.Frequency[] }>
 		>((results, sound) => {
-			const instrument = this.sounds[sound.color]
+			let instrument = this.sounds[sound.color]
 			if (!instrument) {
-				console.error('No instrument in kit for', sound)
+				console.log('No instrument for', sound.color)
 
 				return results
 			}

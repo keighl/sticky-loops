@@ -5,6 +5,7 @@ export namespace FSUI {
 	export interface Kit {
 		trigger(options: Kit_TriggerOptions): void
 		sounds: Record<string, Kit_SoundTrigger>
+		soundsLoaded: boolean
 	}
 
 	export type Kit_TriggerOptions = {

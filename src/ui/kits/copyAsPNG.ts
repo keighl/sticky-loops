@@ -29,6 +29,7 @@ const midiMap = {
 class CopyAsPNG implements FSUI.Kit {
 	// Instrument sources
 	drumSampler: Tone.Sampler
+	soundsLoaded: boolean
 
 	sounds: Record<string, FSUI.Kit_SoundTrigger> = {
 		[STICKY_COLOR_LIGHTGRAY]: {
@@ -75,6 +76,7 @@ class CopyAsPNG implements FSUI.Kit {
 	}
 
 	constructor() {
+		this.soundsLoaded = false
 		this.drumSampler = new Tone.Sampler({
 			urls: {
 				[midiMap.cajonBass]: 'cajon-bass.wav',
@@ -88,10 +90,20 @@ class CopyAsPNG implements FSUI.Kit {
 				[midiMap.claves]: 'claves.wav',
 			},
 			baseUrl: 'https://sticky-loops.netlify.app/copy-as-png/',
+			onload: () => {
+				this.soundsLoaded = true
+			},
+			onerror: (error) => {
+				console.error(error)
+			},
 		}).toDestination()
 	}
 
 	trigger({ sounds, time, subdivision }: FSUI.Kit_TriggerOptions) {
+		if (!this.soundsLoaded) {
+			return
+		}
+
 		const synthData = sounds.reduce<
 			Record<string, { notes: Tone.Unit.Frequency[] }>
 		>((results, sound) => {

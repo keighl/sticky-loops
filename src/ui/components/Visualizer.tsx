@@ -1,7 +1,7 @@
 import { FunctionComponent } from 'react'
 import { FS } from '../../types'
 import { colors } from '../style'
-import { stickyColors } from '../../constants'
+import { stickyColorsByName } from '../../constants'
 
 type Props = {
 	stepData: FS.StepData.Column[]
@@ -68,16 +68,16 @@ const Visualizer: FunctionComponent<Props> = ({
 }
 
 const buttonBG: Record<string, string> = {
-	[stickyColors.STICKY_COLOR_GRAY]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(130, 130, 130, 0.15) 100%), #AFBCCF`,
-	[stickyColors.STICKY_COLOR_RED]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(255, 0, 0, 0.15) 100%), #FFAFA3`,
-	[stickyColors.STICKY_COLOR_BLUE]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(0, 149, 255, 0.15) 100%), #80CAFF`,
-	[stickyColors.STICKY_COLOR_ORANGE]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(255, 92, 0, 0.15) 100%), #FFC470`,
-	[stickyColors.STICKY_COLOR_PINK]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(255, 0, 205, 0.15) 100%), #FFBDF2`,
-	[stickyColors.STICKY_COLOR_LIGHTGRAY]: `black`,
-	[stickyColors.STICKY_COLOR_TEAL]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(0, 163, 255, 0.15) 100%), #75D7F0`,
-	[stickyColors.STICKY_COLOR_YELLOW]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(255, 192, 0, 0.15) 100%), #FFD966`,
-	[stickyColors.STICKY_COLOR_VIOLET]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(103, 36, 180, 0.15) 100%), #D9B8FF`,
-	[stickyColors.STICKY_COLOR_GREEN]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(0, 255, 133, 0.15) 100%), #85E0A3`,
+	[stickyColorsByName.STICKY_COLOR_GRAY]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(130, 130, 130, 0.15) 100%), #AFBCCF`,
+	[stickyColorsByName.STICKY_COLOR_RED]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(255, 0, 0, 0.15) 100%), #FFAFA3`,
+	[stickyColorsByName.STICKY_COLOR_BLUE]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(0, 149, 255, 0.15) 100%), #80CAFF`,
+	[stickyColorsByName.STICKY_COLOR_ORANGE]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(255, 92, 0, 0.15) 100%), #FFC470`,
+	[stickyColorsByName.STICKY_COLOR_PINK]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(255, 0, 205, 0.15) 100%), #FFBDF2`,
+	[stickyColorsByName.STICKY_COLOR_LIGHTGRAY]: `black`,
+	[stickyColorsByName.STICKY_COLOR_TEAL]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(0, 163, 255, 0.15) 100%), #75D7F0`,
+	[stickyColorsByName.STICKY_COLOR_YELLOW]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(255, 192, 0, 0.15) 100%), #FFD966`,
+	[stickyColorsByName.STICKY_COLOR_VIOLET]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(103, 36, 180, 0.15) 100%), #D9B8FF`,
+	[stickyColorsByName.STICKY_COLOR_GREEN]: `radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(0, 255, 133, 0.15) 100%), #85E0A3`,
 }
 
 const Column: FunctionComponent<{

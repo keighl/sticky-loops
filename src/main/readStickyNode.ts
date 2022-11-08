@@ -1,5 +1,7 @@
 import rgbHex from 'rgb-hex'
+import { stickyColorsByHex, stickyColorsByName } from '../constants'
 import { FS } from '../types'
+import { closestStickyColor } from '../utils'
 
 const parseSticky = (node: StickyNode): FS.StickyNoteData | null => {
 	let color: string | null = null
@@ -22,6 +24,17 @@ const parseSticky = (node: StickyNode): FS.StickyNoteData | null => {
 		}
 	}
 
+	if (!color) {
+		stickyColorsByName.STICKY_COLOR_LIGHTGRAY
+	}
+
+	if (!stickyColorsByHex[color!]) {
+		console.log('Found non standard sticky color', color)
+
+		color = closestStickyColor(color!)
+		console.log('==> Remap to', color)
+	}
+
 	const stickyNoteData: FS.StickyNoteData = {
 		id: node.id,
 		rect: {
@@ -30,7 +43,7 @@ const parseSticky = (node: StickyNode): FS.StickyNoteData | null => {
 			width: node.width,
 			height: node.height,
 		},
-		color: color ? color : '___',
+		color: color!,
 		rgb: { r, g, b },
 	}
 	return stickyNoteData

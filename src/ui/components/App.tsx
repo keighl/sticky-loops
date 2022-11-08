@@ -24,7 +24,7 @@ import { kitOptionsById, subdivisionOptionsById } from '../constants'
 import KitSelect from './KitSelect'
 import { colors, typeRamp } from '../style'
 import TempoSelect from './TempoSelect'
-import SelectionImage from './SelectionImage'
+import SelectionImage from './NoDataImage'
 
 type Props = {}
 

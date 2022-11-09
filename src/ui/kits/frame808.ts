@@ -12,6 +12,7 @@ import {
 	STICKY_COLOR_VIOLET,
 	STICKY_COLOR_GREEN,
 } from '../../constants'
+import { KIT_FRAME_808 } from '../constants'
 import { FSUI } from '../types'
 
 const midiMap = {
@@ -27,7 +28,7 @@ const midiMap = {
 }
 
 class Frame808 implements FSUI.Kit {
-	// Instrument sources
+	id = KIT_FRAME_808
 	drumSampler: Tone.Sampler
 	soundsLoaded: boolean
 

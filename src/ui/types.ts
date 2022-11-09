@@ -2,7 +2,10 @@ import * as Tone from 'tone'
 import { FS } from '../types'
 
 export namespace FSUI {
+	export type KitID = string
+
 	export interface Kit {
+		id: string
 		trigger(options: Kit_TriggerOptions): void
 		sounds: Record<string, Kit_SoundTrigger>
 		soundsLoaded: boolean

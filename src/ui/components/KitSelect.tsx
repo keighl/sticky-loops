@@ -3,7 +3,7 @@ import keycode from 'keycode'
 import { Radio, RadioGroup, useRadioState } from 'ariakit/radio'
 import { VisuallyHidden } from 'ariakit'
 
-import { kitOptions } from '../constants'
+import { kits } from '../constants'
 import { colors, typeRamp } from '../style'
 
 type Props = {
@@ -62,7 +62,7 @@ const KitSelection: FunctionComponent<Props> = ({ value, onChange }) => {
 					},
 				}}
 			>
-				{kitOptions.map((option) => {
+				{kits.map((option) => {
 					const isChecked = option.id === radio.value
 					return (
 						<label

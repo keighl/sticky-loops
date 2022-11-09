@@ -1,4 +1,5 @@
 import { ReactNode } from 'react'
+import { FSUI } from './types'
 
 export const bpmMax = 140
 export const bpmMin = 72
@@ -75,31 +76,36 @@ type KitOption = {
 	name: string
 }
 
-export const kitOptions: KitOption[] = [
+export const KIT_FRAME_808: FSUI.KitID = 'kit_frame808'
+export const KIT_SPACE_BEWTWEEN: FSUI.KitID = 'kit_space_between'
+export const KIT_CONGA_AS_PNG: FSUI.KitID = 'kit_congaAsPNG'
+export const KIT_DOCUMENT_COLORS: FSUI.KitID = 'kit_documentColors'
+
+export const kits: KitOption[] = [
 	{
-		id: 'frame808',
+		id: KIT_FRAME_808,
 		name: 'Frame 808',
 	},
 	{
-		id: 'spaceBetween',
+		id: KIT_SPACE_BEWTWEEN,
 		name: 'Space Between',
 	},
 	{
-		id: 'copyAsPNG',
+		id: KIT_CONGA_AS_PNG,
 		name: 'Conga as PNG',
 	},
 	{
-		id: 'documentColors',
+		id: KIT_DOCUMENT_COLORS,
 		name: 'Document Colors',
 	},
 ]
 
-export const kitOptionsById = kitOptions.reduce<Record<string, KitOption>>(
+export const kitsByID = kits.reduce<Record<FSUI.KitID, KitOption>>(
 	(result, option) => {
 		return {
 			...result,
 			[option.id]: option,
 		}
 	},
-	{}
+	{} as Record<FSUI.KitID, KitOption>
 )

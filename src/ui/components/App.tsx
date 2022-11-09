@@ -13,28 +13,18 @@ import keycode from 'keycode'
 
 import { useStore } from '../store'
 import { FS } from '../../types'
-import { FSUI } from '../types'
-import Frame808 from '../kits/frame808'
-import SpaceBetween from '../kits/spaceBetween'
-import CopyAsPNG from '../kits/copyAsPNG'
-import DocumentColors from '../kits/documentColors'
 import Visualizer from './Visualizer'
 import ControlButton from './ControlButton'
 import SubdivisionSelect from './SubdivisionSelect'
-import { kitOptionsById, subdivisionOptionsById } from '../constants'
+import { kits, kitsByID, subdivisionOptionsById } from '../constants'
 import KitSelect from './KitSelect'
 import { colors, typeRamp } from '../style'
 import TempoSelect from './TempoSelect'
 import SelectionImage from './NoDataImage'
+import { FSUI } from '../types'
+import useKit from '../useKit'
 
 type Props = {}
-
-const kitMap: Record<string, FSUI.Kit> = {
-	frame808: new Frame808(),
-	spaceBetween: new SpaceBetween(),
-	copyAsPNG: new CopyAsPNG(),
-	documentColors: new DocumentColors(),
-}
 
 const App: FunctionComponent<Props> = ({}) => {
 	useEffect(() => {
@@ -64,7 +54,9 @@ const App: FunctionComponent<Props> = ({}) => {
 	const { stepData } = useStore((state) => state)
 
 	// Kit
-	const [kit, setKit] = useState<string>('frame808')
+	const [kitID, setKitID] = useState<FSUI.KitID>(kits[0].id)
+
+	const kit = useKit(kitID)
 
 	// BPM
 	const [bpm, setBpm] = useState(Tone.Transport.bpm.value)
@@ -106,9 +98,7 @@ const App: FunctionComponent<Props> = ({}) => {
 				return
 			}
 
-			if (!kitMap[kit]) return
-
-			kitMap[kit].trigger({ sounds: column.sounds, time, subdivision })
+			kit.trigger({ sounds: column.sounds, time, subdivision })
 			setStepIndex(column.index)
 		},
 		[kit, subdivision]
@@ -352,7 +342,7 @@ const App: FunctionComponent<Props> = ({}) => {
 													whiteSpace: 'nowrap',
 												}}
 											>
-												{kitOptionsById[kit].name}
+												{kitsByID[kitID].name}
 											</div>
 										</div>
 									</div>
@@ -493,9 +483,9 @@ const App: FunctionComponent<Props> = ({}) => {
 									// }}
 								>
 									<KitSelect
-										value={kit}
+										value={kitID}
 										onChange={(kitID, close) => {
-											setKit(kitID)
+											setKitID(kitID)
 											if (close) {
 												setControlState(null)
 											}

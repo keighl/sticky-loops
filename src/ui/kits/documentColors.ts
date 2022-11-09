@@ -12,6 +12,7 @@ import {
 	STICKY_COLOR_VIOLET,
 	STICKY_COLOR_GREEN,
 } from '../../constants'
+import { KIT_DOCUMENT_COLORS } from '../constants'
 import { FSUI } from '../types'
 
 const midiMap = {
@@ -23,7 +24,7 @@ const midiMap = {
 }
 
 class DocumentColors implements FSUI.Kit {
-	// Instrument sources
+	id = KIT_DOCUMENT_COLORS
 	drumSampler: Tone.Sampler
 	pianoSampler: Tone.Sampler
 	soundsLoaded: boolean

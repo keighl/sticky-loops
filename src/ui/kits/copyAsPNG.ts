@@ -12,6 +12,7 @@ import {
 	STICKY_COLOR_VIOLET,
 	STICKY_COLOR_GREEN,
 } from '../../constants'
+import { KIT_CONGA_AS_PNG } from '../constants'
 import { FSUI } from '../types'
 
 const midiMap = {
@@ -27,7 +28,7 @@ const midiMap = {
 }
 
 class CopyAsPNG implements FSUI.Kit {
-	// Instrument sources
+	id = KIT_CONGA_AS_PNG
 	drumSampler: Tone.Sampler
 	soundsLoaded: boolean
 

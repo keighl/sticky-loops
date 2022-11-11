@@ -133,15 +133,37 @@ const parseThenPlay = (selection: readonly SceneNode[]) => {
 }
 
 figma.on('run', async () => {
-	parseThenPlay(figma.currentPage.selection)
+	try {
+		parseThenPlay(figma.currentPage.selection)
+	} catch (error) {
+		figma.notify("Oof! Sticky Loops couldn't parse your board", {
+			error: true,
+		})
+	}
 })
 
 figma.on('selectionchange', async () => {
 	if (figma.currentPage.selection.length > 0) {
-		parseThenPlay(figma.currentPage.selection)
+		try {
+			parseThenPlay(figma.currentPage.selection)
+		} catch (error) {
+			figma.notify("Oof! Sticky Loops couldn't parse your board", {
+				error: true,
+			})
+		}
 	}
 
 	// Just keep whatever data is currrently loaded up if there is no selection...
 })
 
-figma.ui.onmessage = (message: FS.PluginMessage<null>) => {}
+figma.ui.onmessage = (message: FS.PluginMessage<any>) => {
+	if (message.command === 'notifyError') {
+		const notifyErrorMessage = message as FS.PluginMessage<{
+			error: Error
+			message: string
+		}>
+		figma.notify(notifyErrorMessage.data.message, {
+			error: true,
+		})
+	}
+}

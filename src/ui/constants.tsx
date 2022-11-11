@@ -77,7 +77,7 @@ type KitOption = {
 }
 
 export const KIT_FRAME_808: FSUI.KitID = 'kit_frame808'
-export const KIT_SPACE_BEWTWEEN: FSUI.KitID = 'kit_space_between'
+export const KIT_SPACE_BEWTWEEN: FSUI.KitID = 'kit_spaceBetween'
 export const KIT_CONGA_AS_PNG: FSUI.KitID = 'kit_congaAsPNG'
 export const KIT_DOCUMENT_COLORS: FSUI.KitID = 'kit_documentColors'
 

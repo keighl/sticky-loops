@@ -14,6 +14,7 @@ import {
 } from '../../constants'
 import { KIT_SPACE_BEWTWEEN } from '../constants'
 import { FSUI } from '../types'
+import Kit from './kit'
 
 const midiMap = {
 	kick: 'A1',
@@ -27,57 +28,57 @@ const midiMap = {
 	noise: 'A3',
 }
 
-class SpaceBetween implements FSUI.Kit {
+const sampleMap: Record<string, FSUI.Kit_SoundTrigger> = {
+	[STICKY_COLOR_LIGHTGRAY]: {
+		sourceTarget: 'none',
+		notes: [],
+	},
+
+	[STICKY_COLOR_RED]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.kick],
+	},
+	[STICKY_COLOR_BLUE]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.hit],
+	},
+	[STICKY_COLOR_ORANGE]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.hihat_1],
+	},
+	[STICKY_COLOR_PINK]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.hihat_2],
+	},
+	[STICKY_COLOR_GRAY]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.noise],
+	},
+	[STICKY_COLOR_TEAL]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.tom_low],
+	},
+	[STICKY_COLOR_YELLOW]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.click],
+	},
+	[STICKY_COLOR_VIOLET]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.clap],
+	},
+	[STICKY_COLOR_GREEN]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.bleep],
+	},
+}
+
+class SpaceBetween extends Kit {
 	id = KIT_SPACE_BEWTWEEN
 	drumSampler: Tone.Sampler
-	soundsLoaded: boolean
 
-	sounds: Record<string, FSUI.Kit_SoundTrigger> = {
-		[STICKY_COLOR_LIGHTGRAY]: {
-			sourceTarget: 'none',
-			notes: [],
-		},
+	constructor(onLoad: FSUI.KitCallbackLoad, onError: FSUI.KitCallbackError) {
+		super(onLoad, onError)
 
-		[STICKY_COLOR_RED]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.kick],
-		},
-		[STICKY_COLOR_BLUE]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.hit],
-		},
-		[STICKY_COLOR_ORANGE]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.hihat_1],
-		},
-		[STICKY_COLOR_PINK]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.hihat_2],
-		},
-		[STICKY_COLOR_GRAY]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.noise],
-		},
-		[STICKY_COLOR_TEAL]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.tom_low],
-		},
-		[STICKY_COLOR_YELLOW]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.click],
-		},
-		[STICKY_COLOR_VIOLET]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.clap],
-		},
-		[STICKY_COLOR_GREEN]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.bleep],
-		},
-	}
-
-	constructor() {
-		this.soundsLoaded = false
 		this.drumSampler = new Tone.Sampler({
 			urls: {
 				[midiMap.kick]: 'kick.wav',
@@ -95,7 +96,7 @@ class SpaceBetween implements FSUI.Kit {
 				this.soundsLoaded = true
 			},
 			onerror: (error) => {
-				console.error(error)
+				onError(error)
 			},
 		}).toDestination()
 
@@ -110,7 +111,7 @@ class SpaceBetween implements FSUI.Kit {
 		const synthData = sounds.reduce<
 			Record<string, { notes: Tone.Unit.Frequency[] }>
 		>((results, sound) => {
-			const instrument = this.sounds[sound.color]
+			const instrument = sampleMap[sound.color]
 			if (!instrument) {
 				console.error('No instrument in kit for', sound)
 

@@ -29,7 +29,7 @@ const parseSticky = (node: StickyNode): FS.StickyNoteData | null => {
 	}
 
 	if (!stickyColorsByHex[color!]) {
-		console.log('Found non standard sticky color', color)
+		console.log('Non-standard sticky color', color)
 
 		color = closestStickyColor(color!)
 		console.log('==> Remap to', color)

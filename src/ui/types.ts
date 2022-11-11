@@ -11,6 +11,9 @@ export namespace FSUI {
 		soundsLoaded: boolean
 	}
 
+	export type KitCallbackLoad = () => void
+	export type KitCallbackError = (error: Error) => void
+
 	export type Kit_TriggerOptions = {
 		sounds: FS.StepData.Sound[]
 		time: Tone.Unit.Time

@@ -14,6 +14,7 @@ import {
 } from '../../constants'
 import { KIT_FRAME_808 } from '../constants'
 import { FSUI } from '../types'
+import Kit from './kit'
 
 const midiMap = {
 	kick: 'A1',
@@ -27,57 +28,56 @@ const midiMap = {
 	tambourine: 'A3',
 }
 
-class Frame808 implements FSUI.Kit {
+const sampleMap: Record<string, FSUI.Kit_SoundTrigger> = {
+	[STICKY_COLOR_LIGHTGRAY]: {
+		sourceTarget: 'none',
+		notes: [],
+	},
+
+	[STICKY_COLOR_RED]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.kick],
+	},
+	[STICKY_COLOR_BLUE]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.snare],
+	},
+	[STICKY_COLOR_ORANGE]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.hihat_open],
+	},
+	[STICKY_COLOR_PINK]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.hihat_pedal],
+	},
+	[STICKY_COLOR_GRAY]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.tambourine],
+	},
+	[STICKY_COLOR_TEAL]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.tom_high],
+	},
+	[STICKY_COLOR_YELLOW]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.tom_high],
+	},
+	[STICKY_COLOR_VIOLET]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.clap2],
+	},
+	[STICKY_COLOR_GREEN]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.clap1],
+	},
+}
+
+class Frame808 extends Kit {
 	id = KIT_FRAME_808
 	drumSampler: Tone.Sampler
-	soundsLoaded: boolean
 
-	sounds: Record<string, FSUI.Kit_SoundTrigger> = {
-		[STICKY_COLOR_LIGHTGRAY]: {
-			sourceTarget: 'none',
-			notes: [],
-		},
-
-		[STICKY_COLOR_RED]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.kick],
-		},
-		[STICKY_COLOR_BLUE]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.snare],
-		},
-		[STICKY_COLOR_ORANGE]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.hihat_open],
-		},
-		[STICKY_COLOR_PINK]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.hihat_pedal],
-		},
-		[STICKY_COLOR_GRAY]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.tambourine],
-		},
-		[STICKY_COLOR_TEAL]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.tom_high],
-		},
-		[STICKY_COLOR_YELLOW]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.tom_high],
-		},
-		[STICKY_COLOR_VIOLET]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.clap2],
-		},
-		[STICKY_COLOR_GREEN]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.clap1],
-		},
-	}
-
-	constructor() {
-		this.soundsLoaded = false
+	constructor(onLoad: FSUI.KitCallbackLoad, onError: FSUI.KitCallbackError) {
+		super(onLoad, onError)
 		this.drumSampler = new Tone.Sampler({
 			urls: {
 				[midiMap.kick]: 'kick.wav',
@@ -93,9 +93,10 @@ class Frame808 implements FSUI.Kit {
 			baseUrl: 'https://sticky-loops.netlify.app/frame-808/',
 			onload: () => {
 				this.soundsLoaded = true
+				this.onLoad()
 			},
 			onerror: (error) => {
-				console.log(error)
+				this.onError(error)
 			},
 		}).toDestination()
 
@@ -110,7 +111,7 @@ class Frame808 implements FSUI.Kit {
 		const synthData = sounds.reduce<
 			Record<string, { notes: Tone.Unit.Frequency[] }>
 		>((results, sound) => {
-			let instrument = this.sounds[sound.color]
+			let instrument = sampleMap[sound.color]
 			if (!instrument) {
 				console.log('No instrument for', sound.color)
 

@@ -14,6 +14,7 @@ import {
 } from '../../constants'
 import { KIT_DOCUMENT_COLORS } from '../constants'
 import { FSUI } from '../types'
+import Kit from './kit'
 
 const midiMap = {
 	snare: 'A1',
@@ -23,60 +24,60 @@ const midiMap = {
 	hihatFoot: 'E1',
 }
 
-class DocumentColors implements FSUI.Kit {
+const sampleMap: Record<string, FSUI.Kit_SoundTrigger> = {
+	[STICKY_COLOR_LIGHTGRAY]: {
+		sourceTarget: 'none',
+		notes: [],
+	},
+
+	[STICKY_COLOR_RED]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.kick],
+	},
+	[STICKY_COLOR_BLUE]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.snare],
+	},
+	[STICKY_COLOR_ORANGE]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.hihatOpen],
+	},
+	[STICKY_COLOR_PINK]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.hihatFoot],
+	},
+	[STICKY_COLOR_GRAY]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.ride],
+	},
+	[STICKY_COLOR_TEAL]: {
+		sourceTarget: 'piano',
+		notes: ['C#4', 'F6', 'A#6'],
+	},
+	[STICKY_COLOR_YELLOW]: {
+		sourceTarget: 'piano',
+		notes: ['A#4', 'F4', 'G#5', 'C#5'],
+	},
+	[STICKY_COLOR_VIOLET]: {
+		sourceTarget: 'piano',
+		notes: ['C#5', 'F5'],
+	},
+	[STICKY_COLOR_GREEN]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.hihatOpen],
+	},
+}
+
+class DocumentColors extends Kit {
 	id = KIT_DOCUMENT_COLORS
 	drumSampler: Tone.Sampler
 	pianoSampler: Tone.Sampler
-	soundsLoaded: boolean
 	drumsLoaded: boolean
 	pianoLoaded: boolean
 
-	sounds: Record<string, FSUI.Kit_SoundTrigger> = {
-		[STICKY_COLOR_LIGHTGRAY]: {
-			sourceTarget: 'none',
-			notes: [],
-		},
+	constructor(onLoad: FSUI.KitCallbackLoad, onError: FSUI.KitCallbackError) {
+		super(onLoad, onError)
 
-		[STICKY_COLOR_RED]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.kick],
-		},
-		[STICKY_COLOR_BLUE]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.snare],
-		},
-		[STICKY_COLOR_ORANGE]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.hihatOpen],
-		},
-		[STICKY_COLOR_PINK]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.hihatFoot],
-		},
-		[STICKY_COLOR_GRAY]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.ride],
-		},
-		[STICKY_COLOR_TEAL]: {
-			sourceTarget: 'piano',
-			notes: ['C#4', 'F6', 'A#6'],
-		},
-		[STICKY_COLOR_YELLOW]: {
-			sourceTarget: 'piano',
-			notes: ['A#4', 'F4', 'G#5', 'C#5'],
-		},
-		[STICKY_COLOR_VIOLET]: {
-			sourceTarget: 'piano',
-			notes: ['C#5', 'F5'],
-		},
-		[STICKY_COLOR_GREEN]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.hihatOpen],
-		},
-	}
-
-	constructor() {
-		this.soundsLoaded = false
 		this.drumsLoaded = false
 		this.pianoLoaded = false
 
@@ -116,7 +117,7 @@ class DocumentColors implements FSUI.Kit {
 				this.checkLoad()
 			},
 			onerror: (error) => {
-				console.error(error)
+				this.onError(error)
 			},
 		})
 
@@ -127,7 +128,11 @@ class DocumentColors implements FSUI.Kit {
 	}
 
 	checkLoad() {
+		if (this.soundsLoaded) return
 		this.soundsLoaded = this.pianoLoaded && this.drumsLoaded
+		if (this.soundsLoaded) {
+			this.onLoad()
+		}
 	}
 
 	trigger({ sounds, time, subdivision }: FSUI.Kit_TriggerOptions) {
@@ -138,7 +143,7 @@ class DocumentColors implements FSUI.Kit {
 		const synthData = sounds.reduce<
 			Record<string, { notes: Tone.Unit.Frequency[] }>
 		>((results, sound) => {
-			const instrument = this.sounds[sound.color]
+			const instrument = sampleMap[sound.color]
 			if (!instrument) {
 				// TODO, find closest color?
 				console.error('No instrument in kit for', sound)

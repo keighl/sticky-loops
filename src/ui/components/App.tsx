@@ -2,9 +2,11 @@ import {
 	FunctionComponent,
 	useCallback,
 	useEffect,
+	useMemo,
 	useRef,
 	useState,
 } from 'react'
+import _debounce from 'lodash/debounce'
 import * as Tone from 'tone'
 import { FocusTrapRegion } from 'ariakit/focus-trap'
 import { VisuallyHidden } from 'ariakit'
@@ -53,10 +55,28 @@ const App: FunctionComponent<Props> = ({}) => {
 	// Steps
 	const { stepData } = useStore((state) => state)
 
+	// Error handling
+	const notifyError = (error: Error) => {
+		const message: FS.PluginMessage<{ error: Error; message: string }> = {
+			command: 'notifyError',
+			data: {
+				error,
+				message: 'There was an issue loading Sticky Loops sounds...',
+			},
+		}
+		parent.postMessage({ pluginMessage: message }, '*')
+	}
+
+	const debouncedNotifyError = useMemo(() => _debounce(notifyError, 300), [])
+
 	// Kit
 	const [kitID, setKitID] = useState<FSUI.KitID>(kits[0].id)
 
-	const kit = useKit(kitID)
+	const handleKitError: FSUI.KitCallbackError = (error: Error) => {
+		debouncedNotifyError(error)
+	}
+
+	const kit = useKit(kitID, handleKitError)
 
 	// BPM
 	const [bpm, setBpm] = useState(Tone.Transport.bpm.value)

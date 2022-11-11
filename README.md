@@ -2,13 +2,13 @@
 
 > What does a brainstorm really sound like?
 
-The answer is here! Sticky Loops takes any gaggle of sticky notes in a Figjam document and tranforms them into an awesome sequenced drum machine. Useful for...
+The answer is here! Sticky Loops takes the sticky notes in a FigJam file and tranforms them into an awesome drum machine. Useful for...
 
 - Daily scrum concerts
-- Setting meeting tempo
+- Setting a meeting cadence
 - Priotizing ideas by downbeat
 - Metronome-based design and concepting
-- Flow disruption
+- General distraction
 
 Instructions
 

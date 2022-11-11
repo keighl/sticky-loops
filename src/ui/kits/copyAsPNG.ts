@@ -14,6 +14,7 @@ import {
 } from '../../constants'
 import { KIT_CONGA_AS_PNG } from '../constants'
 import { FSUI } from '../types'
+import Kit from './kit'
 
 const midiMap = {
 	cajonBass: 'A1',
@@ -27,57 +28,56 @@ const midiMap = {
 	claves: 'A3',
 }
 
-class CopyAsPNG implements FSUI.Kit {
+const sampleMap: Record<string, FSUI.Kit_SoundTrigger> = {
+	[STICKY_COLOR_LIGHTGRAY]: {
+		sourceTarget: 'none',
+		notes: [],
+	},
+
+	[STICKY_COLOR_RED]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.cajonBass],
+	},
+	[STICKY_COLOR_BLUE]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.cajonSnare],
+	},
+	[STICKY_COLOR_ORANGE]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.castanets],
+	},
+	[STICKY_COLOR_PINK]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.timbale],
+	},
+	[STICKY_COLOR_GRAY]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.stomp],
+	},
+	[STICKY_COLOR_TEAL]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.maracas],
+	},
+	[STICKY_COLOR_YELLOW]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.congaHigh],
+	},
+	[STICKY_COLOR_VIOLET]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.congaLow],
+	},
+	[STICKY_COLOR_GREEN]: {
+		sourceTarget: 'drums',
+		notes: [midiMap.claves],
+	},
+}
+
+class CopyAsPNG extends Kit {
 	id = KIT_CONGA_AS_PNG
 	drumSampler: Tone.Sampler
-	soundsLoaded: boolean
 
-	sounds: Record<string, FSUI.Kit_SoundTrigger> = {
-		[STICKY_COLOR_LIGHTGRAY]: {
-			sourceTarget: 'none',
-			notes: [],
-		},
-
-		[STICKY_COLOR_RED]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.cajonBass],
-		},
-		[STICKY_COLOR_BLUE]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.cajonSnare],
-		},
-		[STICKY_COLOR_ORANGE]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.castanets],
-		},
-		[STICKY_COLOR_PINK]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.timbale],
-		},
-		[STICKY_COLOR_GRAY]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.stomp],
-		},
-		[STICKY_COLOR_TEAL]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.maracas],
-		},
-		[STICKY_COLOR_YELLOW]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.congaHigh],
-		},
-		[STICKY_COLOR_VIOLET]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.congaLow],
-		},
-		[STICKY_COLOR_GREEN]: {
-			sourceTarget: 'drums',
-			notes: [midiMap.claves],
-		},
-	}
-
-	constructor() {
-		this.soundsLoaded = false
+	constructor(onLoad: FSUI.KitCallbackLoad, onError: FSUI.KitCallbackError) {
+		super(onLoad, onError)
 		this.drumSampler = new Tone.Sampler({
 			urls: {
 				[midiMap.cajonBass]: 'cajon-bass.wav',
@@ -95,7 +95,7 @@ class CopyAsPNG implements FSUI.Kit {
 				this.soundsLoaded = true
 			},
 			onerror: (error) => {
-				console.error(error)
+				this.onError(error)
 			},
 		}).toDestination()
 	}
@@ -108,7 +108,7 @@ class CopyAsPNG implements FSUI.Kit {
 		const synthData = sounds.reduce<
 			Record<string, { notes: Tone.Unit.Frequency[] }>
 		>((results, sound) => {
-			const instrument = this.sounds[sound.color]
+			const instrument = sampleMap[sound.color]
 			if (!instrument) {
 				console.error('No instrument in kit for', sound)
 

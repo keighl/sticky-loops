@@ -164,7 +164,11 @@ const App: FunctionComponent<Props> = ({}) => {
 	////
 
 	const play_pause = () => {
-		Tone.Transport.toggle()
+		if (Tone.Transport.state !== 'started') {
+			Tone.Transport.start()
+		} else {
+			Tone.Transport.stop()
+		}
 	}
 
 	////

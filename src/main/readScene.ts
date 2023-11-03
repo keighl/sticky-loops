@@ -32,7 +32,7 @@ const readScene = async (
 
 		while (!(res = walker.next()).done) {
 			const node = res.value
-			if (node.type === 'STICKY') {
+			if (node.type === 'STICKY' || node.type === 'SHAPE_WITH_TEXT') {
 				const parsedSticky = parseSticky(node as StickyNode)
 
 				if (parsedSticky) {

@@ -34,10 +34,10 @@
 	"dependencies": {
 		"@emotion/react": "^11.10.4",
 		"ariakit": "^2.0.0-next.41",
+		"colortranslator": "^1.9.3",
 		"framer-motion": "^7.5.1",
 		"keycode": "^2.2.1",
 		"lodash": "^4.17.21",
-		"nearest-color": "^0.4.4",
 		"normalize.css": "^8.0.1",
 		"react": "^18.0.0",
 		"react-dom": "^18.0.0",

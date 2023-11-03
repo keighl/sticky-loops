@@ -165,6 +165,7 @@ const App: FunctionComponent<Props> = ({}) => {
 
 	const play_pause = () => {
 		if (Tone.Transport.state !== 'started') {
+			Tone.start()
 			Tone.Transport.start()
 		} else {
 			Tone.Transport.stop()
@@ -225,11 +226,11 @@ const App: FunctionComponent<Props> = ({}) => {
 					css={{
 						...typeRamp.reg_16,
 						textAlign: 'center',
-						width: '200px',
+						width: '260px',
 						paddingTop: '2rem',
 					}}
 				>
-					Select some sticky notes to begin.
+					Select sticky notes or shapes to begin.
 				</div>
 			</motion.div>
 		)

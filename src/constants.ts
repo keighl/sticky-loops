@@ -1,3 +1,5 @@
+import { ColorTranslator } from 'colortranslator'
+
 export const STICKY_COLOR_GRAY = '#AFBCCF'
 export const STICKY_COLOR_RED = '#FFAFA3'
 export const STICKY_COLOR_BLUE = '#80CAFF'
@@ -33,4 +35,18 @@ export const stickyColorsByHex: Record<string, string> = {
 	[STICKY_COLOR_YELLOW]: 'STICKY_COLOR_YELLOW',
 	[STICKY_COLOR_VIOLET]: 'STICKY_COLOR_VIOLET',
 	[STICKY_COLOR_GREEN]: 'STICKY_COLOR_GREEN',
+}
+
+export const stickyColorHues: Record<string, number> = {
+	[STICKY_COLOR_GRAY]: new ColorTranslator(STICKY_COLOR_GRAY).HSLObject.h,
+	[STICKY_COLOR_RED]: new ColorTranslator(STICKY_COLOR_RED).HSLObject.h,
+	[STICKY_COLOR_BLUE]: new ColorTranslator(STICKY_COLOR_BLUE).HSLObject.h,
+	[STICKY_COLOR_ORANGE]: new ColorTranslator(STICKY_COLOR_ORANGE).HSLObject.h,
+	[STICKY_COLOR_PINK]: new ColorTranslator(STICKY_COLOR_PINK).HSLObject.h,
+	[STICKY_COLOR_LIGHTGRAY]: new ColorTranslator(STICKY_COLOR_LIGHTGRAY)
+		.HSLObject.h,
+	[STICKY_COLOR_TEAL]: new ColorTranslator(STICKY_COLOR_TEAL).HSLObject.h,
+	[STICKY_COLOR_YELLOW]: new ColorTranslator(STICKY_COLOR_YELLOW).HSLObject.h,
+	[STICKY_COLOR_VIOLET]: new ColorTranslator(STICKY_COLOR_VIOLET).HSLObject.h,
+	[STICKY_COLOR_GREEN]: new ColorTranslator(STICKY_COLOR_GREEN).HSLObject.h,
 }

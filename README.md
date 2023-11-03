@@ -1,3 +1,5 @@
+![Header](./sticky-loops-banner.png)
+
 # Sticky Loops
 
 > What does a brainstorm really sound like?

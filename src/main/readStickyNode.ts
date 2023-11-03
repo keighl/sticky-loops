@@ -25,14 +25,17 @@ const parseSticky = (node: StickyNode): FS.StickyNoteData | null => {
 	}
 
 	if (!color) {
-		stickyColorsByName.STICKY_COLOR_LIGHTGRAY
+		console.log(
+			`StickyLoops: No fill on ${node.type} - Converting to lightgray`
+		)
+		color = stickyColorsByName.STICKY_COLOR_LIGHTGRAY
 	}
 
 	if (!stickyColorsByHex[color!]) {
-		console.log('Non-standard sticky color', color)
+		console.log(`StickyLoops: Non-standard sticky color`, color)
 
 		color = closestStickyColor(color!)
-		console.log('==> Remap to', color)
+		console.log('   ==> Remap to', color)
 	}
 
 	const stickyNoteData: FS.StickyNoteData = {
